@@ -1,0 +1,17 @@
+ <ion-view title = "OTP"> 
+  <ion-content>
+    <form ng-submit="SubmitOTP()">
+      <div class="list">
+        <label class="item item-input">
+          <input type="tel" maxlength="6" inputmode="numeric" pattern="[0-9]*" title="Non-negative integral number" ng-model = "OTP">
+        </label>
+        <label class="item">
+          <button class="button button-block button-dark" type="submit">Submit</button>
+        </label>
+		<p>Output Message : {{msg}}</p>
+		<p>StatusCode: {{statusval}}</p>
+		<p>Status: {{statustext}}</p>
+		<p>Response Headers: {{headers}}</p>
+      </div>
+    </form>
+  </ion-content>

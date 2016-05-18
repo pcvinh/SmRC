@@ -1,0 +1,21 @@
+<ion-view title = "{{activeVOD.T}}"> 
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat= "VOD in vods.c" ng-if = "activeVOD.T == VOD.T">
+	  <div class="padding text-left" ng-controller="RatingsArrCtrl">
+        <h3>Rate the VOD</h3>
+        <div>
+          <a href="javascript:" ng-repeat="r in ratingArr" class="padding" style="text-decoration:none;">
+            <i class="icon {{r.icon}}" ng-click="setRating(r.value)"></i>
+          </a>
+        </div>
+      </div><br>
+	  {{VOD.T}}<br>
+	  {{VOD.Tc}}<br>
+	  {{VOD.id}}<br>
+	  <button button class="ion-play"></button>
+	  <button button class="ion-pause"></button>
+	  <button button class="ion-stop"></button>
+   </ion-list>
+  </ion-content>
+</ion-view>

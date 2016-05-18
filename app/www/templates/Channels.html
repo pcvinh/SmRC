@@ -1,0 +1,19 @@
+<ion-view title = "{{activeChannel.ChannelName.content}}" class = "my-view"> 
+  <ion-content>
+    <ion-list>
+	<div ng-repeat="serie in epgs.ChannelList.Series">
+	<div ng-controller = "PushCtrl">
+     <ion-item ng-repeat= "Channel in serie.Service" ng-if = "activeChannel.ChannelName.content == Channel.ChannelName.content">
+	  {{Channel.ChannelName.content}}<br>
+	  {{Channel.ChannelID}}<br>
+	  <button button class="ion-record"></button>
+	  <button button class="ion-ios-star-outline" ng-class="{'ion-ios-star': liked, 'ion-ios-star-outline': !liked}" ng-click="liked=!liked;PushToken()"></button> 
+      <button button class="ion-alert-circled"></button>
+	  <button button class="ion-ios-unlocked-outline" ng-class="{'ion-ios-locked': locked, 'ion-ios-unlocked-outline': !locked}" ng-click="locked=!locked;"></button><br>
+	  {{Channel.ChannelDescription.content }}<br>
+    </div>
+	</div>
+	  </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
