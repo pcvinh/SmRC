@@ -16,7 +16,6 @@ angular.module('starter.controllers', [])
 	
 	    $scope.OTP;
 	    $scope.SubmitOTP = function() {	
-        var TokenArr = [];
 		var url;
 		url = '/Pairing';
 
@@ -27,8 +26,10 @@ angular.module('starter.controllers', [])
 			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
 		}).then(function(response) {
 			console.log(response.data);
-			if(response.data) { 	
-			TokenArr.push(response.data.token);
+			if(response.data) {
+			$scope.TokenArr = [];  	
+			localStorage.getItem("TokenArr",response.data.token);       
+			$scope.TokenArr.push(response.data.token);
 		    localStorage.setItem("TokenArr", response.data.token);
 			$scope.msg = "Service Exists";
 			$scope.statusval = response.status;

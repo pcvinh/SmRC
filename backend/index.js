@@ -54,18 +54,24 @@ app.post('/Pairing', function (req, res) {
   if(user == null || user == undefined) {
 	  user = "Anonymous";
   }
-  
+  console.log(user);
    collection.findAndModify(
    {OTP: rs}, //query
+   [['_id','asc']],  // sort order
    {$set: {username : user}}, //update statement
    {new: true}, // modified document
    {}, //options
 	function (err , item) {
-	   
-	  var channelId = item.channelId, stbname = item.STBName;
+		if(err) {
+			console.log(err);
+			res.jsonp('error');
+			return;
+		}
+	   console.log(item);
+	  var channelId = item.ChannelId, stbname = item.STBName;
 		  
 	  var jwt = require('jsonwebtoken');
-	  var token = jwt.sign({ ChannelId: channelid });
+	  var token = jwt.sign({ ChannelId: channelId },'asdasd');
 	  
 	  res.jsonp({token : token, stb : stbname}); 
 	  
