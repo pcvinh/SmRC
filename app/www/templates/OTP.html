@@ -1,5 +1,5 @@
  <ion-view title = "OTP"> 
-  <ion-content>
+  <ion-content ng-controller = "PostCtrl">
     <form ng-submit="SubmitOTP()">
       <div class="list">
         <label class="item item-input">
@@ -11,7 +11,6 @@
 		<p>Output Message : {{msg}}</p>
 		<p>StatusCode: {{statusval}}</p>
 		<p>Status: {{statustext}}</p>
-		<p>Response Headers: {{headers}}</p>
       </div>
     </form>
   </ion-content>

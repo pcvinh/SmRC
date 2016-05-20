@@ -31,6 +31,7 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 	cache:false,
 	controller:'ReturnVODCtrl'
     })
+
 	
   .state('Settings',{
 	  url:'/Settings',
@@ -46,6 +47,13 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 	cache:false,
     controller: 'ReturnCtrl'
 	})
+	
+   .state('login',{
+	url:'/login',
+	templateUrl:'templates/login.html',
+	controller:'LoginCtrl'
+	})
+		
 		
   .state('Settings.DisplayS',{
 	  url:'/DisplayS',
@@ -103,14 +111,7 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 		}
 	})
 	
-  .state('Settings.Login',{
-	 url: '/Login',
-	 views:{
-	   'menuContent':{
-	    templateUrl:'templates/login.html',
-			}
-		}
-	})
+  
 	
   .state('Settings.OTP',{
      url: '/OTP',
@@ -120,4 +121,6 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 			}
 		}
 	});
+	$urlRouterProvider.otherwise('/login');
 });
+
