@@ -14,24 +14,30 @@ angular.module('starter.controllers', [])
 		return str.join('&');
 	}
 	
-	    $scope.OTP;
-	    $scope.SubmitOTP = function() {	
+	$scope.OTP;
+	$scope.SubmitOTP = function() {	
+		
 		var url;
 		url = '/Pairing';
-
 		$http({
 			method  : 'POST',
 			url     : url,
 			data    : _serialize({OTP : $scope.OTP}),  // pass in data as strings    
 			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
 		}).then(function(response) {
-			console.log(response.data);
-			if(response.data) {
-			$scope.TokenArr = [];  	
-			localStorage.getItem("TokenArr",response.data.token);       
-			$scope.TokenArr.push(response.data.token);
-		    localStorage.setItem("TokenArr", response.data.token);
-			$scope.msg = "Service Exists";
+			if(response.data) { 
+			var localStorageTokenString = localStorage.getItem("TokenArr");
+			var TokenArr;
+			if(localStorageTokenString == null || localStorageTokenString == undefined){
+				TokenArr  = [];
+			} else {
+				TokenArr = JSON.parse(localStorageTokenString);
+			}
+			
+			TokenArr.push(response.data.token);
+			localStorage.setItem("TokenArr", JSON.stringify(TokenArr));
+			console.log(TokenArr);
+			$scope.msg = "ServiceExists";
 			$scope.statusval = response.status;
 			$scope.statustext = response.statusText;
 			}
@@ -55,38 +61,46 @@ angular.module('starter.controllers', [])
     });
 })
 .controller('RatingsArrCtrl', function($scope){
-		$scope.ratingArr = [
-		{value: 1,icon: 'ion-ios-star-outline'},
-		{value: 2,icon: 'ion-ios-star-outline'}, 
-		{value: 3,icon: 'ion-ios-star-outline'},
-		{value: 4,icon: 'ion-ios-star-outline'},
-		{value: 5,icon: 'ion-ios-star-outline'}
-		];
-		$scope.setRating = function(val) {
-		var rtgs = $scope.ratingArr;
-		for (var i = 0; i < rtgs.length; i++) {
-		    if (i < val) {
-			rtgs[i].icon = 'ion-ios-star';
-		} else {
-			rtgs[i].icon = 'ion-ios-star-outline';
-		}
+	$scope.ratingArr = [
+	{value: 1,icon: 'ion-ios-star-outline'},
+	{value: 2,icon: 'ion-ios-star-outline'}, 
+	{value: 3,icon: 'ion-ios-star-outline'},
+	{value: 4,icon: 'ion-ios-star-outline'},
+	{value: 5,icon: 'ion-ios-star-outline'}
+	];
+	$scope.setRating = function(val) {
+    var rtgs = $scope.ratingArr;
+    for (var i = 0; i < rtgs.length; i++) {
+      if (i < val) {
+        rtgs[i].icon = 'ion-ios-star';
+      } else {
+        rtgs[i].icon = 'ion-ios-star-outline';
+      }
     };
   }
 })
 .controller('LoginCtrl',function($scope,LoginService,$ionicPopup, $state){
-	  $scope.data = {};
-	  $scope.login = function() {
-	      LoginService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
-	      $state.go('ChannelsC.Channels');
-	  }).error(function(data) {
-	      var alertPopup = $ionicPopup.alert({
-		  title: 'Login failed!',
-		  template: 'Please check your credentials!'
-	   });
-	});
-   }
+$scope.data = {};
+  $scope.login = function() {
+        LoginService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
+            $state.go('ChannelsC.Channels');
+        }).error(function(data) {
+            var alertPopup = $ionicPopup.alert({
+            title: 'Login failed!',
+            template: 'Please check your credentials!'
+            });
+        });
+    }
 })
+.controller('PushCtrl', function($scope){
+	$scope.Token= "";
+	$scope.TokenArr = [];	
+	$scope.PushToken = function(){
+    $scope.TokenArr.push($scope.Token);
+	localStorage.setItem("TokenArr", JSON.stringify($scope.TokenArr));
 
+	}
+})
 .controller('globalCtrl',function($scope,$ionicSideMenuDelegate){
 	$scope.selectChannel = function(channel, index){
     $scope.activeChannel = channel;
