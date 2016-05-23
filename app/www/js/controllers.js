@@ -33,7 +33,6 @@ angular.module('starter.controllers', [])
 			} else {
 				TokenArr = JSON.parse(localStorageTokenString);
 			}
-			
 			TokenArr.push(response.data.token);
 			localStorage.setItem("TokenArr", JSON.stringify(TokenArr));
 			console.log(TokenArr);
@@ -43,21 +42,21 @@ angular.module('starter.controllers', [])
 			}
 		},
 		function(response) { 
-				$scope.msg = "Service not Exists";
-				$scope.statusval = response.status;
-				$scope.statustext = response.statusText;
+			$scope.msg = "Service not Exists";
+			$scope.statusval = response.status;
+			$scope.statustext = response.statusText;
 		});
 
 	}
 })
 .controller('ReturnCtrl', function($scope, ReturnService) {
-	    ReturnService.getChannels().then(function(response){
-		$scope.epgs = response.data;
+    ReturnService.getChannels().then(function(response){
+	$scope.epgs = response.data;
 	});
 })
 .controller('ReturnVODCtrl', function($scope, ReturnVodService) {
-	    ReturnVodService.getVODs().then(function(response){
-	    $scope.vods = response.data;
+	ReturnVodService.getVODs().then(function(response){
+	$scope.vods = response.data;
     });
 })
 .controller('RatingsArrCtrl', function($scope){
@@ -80,20 +79,20 @@ angular.module('starter.controllers', [])
   }
 })
 .controller('LoginCtrl',function($scope,LoginService,$ionicPopup, $state){
-$scope.data = {};
-  $scope.login = function() {
-        LoginService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
-            $state.go('ChannelsC.Channels');
-        }).error(function(data) {
-            var alertPopup = $ionicPopup.alert({
-            title: 'Login failed!',
-            template: 'Please check your credentials!'
-            });
+     $scope.data = {};
+	 $scope.login = function() {
+	 LoginService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
+	 $state.go('ChannelsC.Channels');
+    }).error(function(data) {
+     var alertPopup = $ionicPopup.alert({
+     title: 'Login failed!',
+     template: 'Please check your credentials!'
         });
-    }
+     });
+   }
 })
 .controller('PushCtrl', function($scope){
-	$scope.Token= "";
+    $scope.Token= "";
 	$scope.TokenArr = [];	
 	$scope.PushToken = function(){
     $scope.TokenArr.push($scope.Token);
