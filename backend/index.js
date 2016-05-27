@@ -34,17 +34,18 @@ var randomString = function(length) {
 
 // http://<ip>:<port>/PairingInit?ChannelId&STBName
 app.get('/PairingInit', function (req, res) {
+  
   var channelId= req.query.ChannelId, STBName = req.query.STBName;
   var rs = randomString(6);  
-
+  
 	db.collection("testCollection").insert({
-		
 		ChannelId : channelId,
 		STBName : STBName,
 		OTP : rs
-		
+	
 	});
-  res.send(rs); 
+  res.jsonp({OTP : rs}); 
+  
 })
 // http://<ip>:<port>/Pairing?ChannelId&STBName
 app.post('/Pairing', function (req, res) {
