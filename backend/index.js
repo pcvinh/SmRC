@@ -44,7 +44,9 @@ app.get('/PairingInit', function (req, res) {
 		OTP : rs
 	
 	});
-  res.jsonp({OTP : rs}); 
+  res.jsonp({OTP : rs});
+
+
   
 })
 // http://<ip>:<port>/Pairing?ChannelId&STBName
@@ -74,7 +76,7 @@ app.post('/Pairing', function (req, res) {
 	  var jwt = require('jsonwebtoken');
 	  var token = jwt.sign({ ChannelId: channelId },'asdasd');
 	  
-	  res.jsonp({token : token, stb : stbname}); 
+	  res.jsonp({token : token, stb : stbname});
 	  
 	 
 	})
