@@ -1,5 +1,10 @@
 var app = require('express')();
 var bodyParser = require('body-parser');
+var pubnub = require("pubnub")({
+ssl : true, // <- enable TLS Tunneling over TCP
+publish_key : "pub-c-78b8d4b5-5db4-4ebe-95a8-93f02d810b27",
+subscribe_key : "sub-c-5ba0ec30-110c-11e6-8c3e-0619f8945a4f"
+});
 
 
 var MongoClient = require('mongodb').MongoClient;
@@ -78,5 +83,45 @@ app.post('/Pairing', function (req, res) {
 	 
 	})
 
+})
+
+// http://<ip>:<port>/KeepAlive?ChannelId&STBName
+app.get('/KeepAlive', function (req, res) {
+    var channelId = req.query.ChannelId;
+	
+	//publish
+	var message = { ChannelId : channelId };
+	pubnub.publish({
+	channel :  channelId,
+	message : 'alive',
+	callback  : function(Command) { 
+        console.log( "SUCCESS!", Command );
+    },
+    error     : function(Command) { 
+        console.log( "FAILED! RETRY PUBLISH!", Command );
+    }
+	});
+	
+	//subscribe
+    pubnub.subscribe({
+    channel : channelId + "_RC",
+    message : function(Command) {
+		res.jsonp(Command);
+		
+		// Unsubscribe from 'channelId_RC,'
+	 
+		pubnub.unsubscribe({
+			channel : channelId + "_RC",
+		});
+	}
+	});
+
+
+
+	
+
+
+		
+		
 })
 
