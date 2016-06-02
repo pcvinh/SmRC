@@ -54,7 +54,7 @@ app.get('/PairingInit', function (req, res) {
 
   
 })
-// http://<ip>:<port>/Pairing?ChannelId&STBName
+// http://<ip>:<port>/Pairing?ChannelId
 app.post('/Pairing', function (req, res) {
   var rs = req.body.OTP, user = req.body.Username;
   
