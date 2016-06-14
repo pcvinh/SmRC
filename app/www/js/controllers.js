@@ -59,6 +59,86 @@ angular.module('starter.controllers', [])
 	$scope.vods = response.data;
     });
 })
+.controller('LocalStorageCtrl',function($scope,$window){
+	// $scope.GetStorage = function(){
+	// $scope.GetTokenArr = (localStorage.getItem('TokenArr')!==null) ? JSON.parse(localStorage.getItem('TokenArr')) : [];
+	// }
+    // console.log($window.localStorage);
+
+	})
+  .controller('SocketInitCtrl', function($scope){
+	 // $scope.checkLocalStorageToken = function(storage) {
+     // $scope.storage = JSON.parse(localStorage.getItem("TokenArr"));
+	 // console.log("asdasd");
+	// if($scope.storage.length > 0 ){
+		// console.log(true);
+		// return true
+	// }
+	// else{
+		// return false;
+		
+	// }
+	 // }
+	 // console.log("checkLocalStorageToken(storage)" + localStorage.getItem("TokenArr"));
+	 // console.log(JSON.parse(localStorage.getItem("TokenArr")));
+	 // console.log();
+	 
+  })
+	 
+	 // $scope.OpenSocket = function(){
+		 
+		// if(TokenArr.length == 1){
+		// mysocket.connect(token);
+		//}
+		// else{
+		// var selectedValue = document.getElementByName("multipleSelect").value;
+		// then mysocket.connect(token);
+		
+	 // }
+	 //}
+ 
+.controller('PushCtrl', function($scope){
+	$scope.Push = function() {			
+		var url;
+		// url = '/Pairing';
+		$http({
+			method  : 'POST',
+			url     : url,
+			// data    : 
+			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+		}).then(function(response) {
+			if(response.data) { 
+			console.log("response.data");
+			
+			}
+		},
+		function(response) { 
+		    
+			
+		});
+	}
+})
+
+.controller('PullCtrl', function($scope){
+	$scope.Pull = function() {	
+		var url;
+		// url = '/Pairing';
+		$http({
+			method  : 'POST',
+			url     : url,
+			// data    : 
+			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+		}).then(function(response) {
+			if(response.data) { 
+			
+			
+			}
+		},
+		function(response) { 
+			
+		});
+	}
+})
 .controller('RatingsArrCtrl', function($scope){
 	$scope.ratingArr = [
 	{value: 1,icon: 'ion-ios-star-outline'},
@@ -91,19 +171,23 @@ angular.module('starter.controllers', [])
      });
    }
 })
-.controller('PushCtrl', function($scope){
-    $scope.Token= "";
-	$scope.TokenArr = [];	
-	$scope.PushToken = function(){
-    $scope.TokenArr.push($scope.Token);
-	localStorage.setItem("TokenArr", JSON.stringify($scope.TokenArr));
-
-	}
+.controller('LoadingCtrl',function($scope,$ionicLoading,$timeout){
+$scope.showLoading = function() {
+      $ionicLoading.show({
+         template: 'Loading...'
+      });
+  $timeout(function () {
+    $ionicLoading.hide();
+  }, 5000);
+} 
 })
+
+
 .controller('globalCtrl',function($scope,$ionicSideMenuDelegate){
 	$scope.selectChannel = function(channel, index){
     $scope.activeChannel = channel;
 	$ionicSideMenuDelegate.toggleLeft(false);
+	
 	};
     $scope.selectVOD = function(VOD, index) {
     $scope.activeVOD = VOD;

@@ -1,4 +1,4 @@
-<ion-side-menus>
+<ion-side-menus ng-controller = "LoadingCtrl">
   <ion-side-menu-content>
     <ion-nav-bar class="bar-balanced">
 	 <ion-nav-buttons side="left">
@@ -18,7 +18,7 @@
       <ion-list>
 	  Search: <input ng-model="content">
 		<div ng-repeat="serie in epgs.ChannelList.Series">
-         <ion-item ng-repeat= "Channel in serie.Service | filter:content" ng-click="selectChannel(Channel, $index)" ng-class="{active: activeChannel == epgs}" href="#/ChannelsC/Channels">
+         <ion-item ng-repeat= "Channel in serie.Service | filter:content" ng-click="showLoading();selectChannel(Channel, $index)" ng-class="{active: activeChannel == epgs}" href="#/ChannelsC/Channels">
 		{{Channel.ChannelName.content}}
         </ion-item>
 		</div>

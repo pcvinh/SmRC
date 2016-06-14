@@ -24,6 +24,9 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 })
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
+  
+
+	
   .state('app', {
     url: '/app',
     abstract: true,
@@ -47,13 +50,7 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 	cache:false,
     controller: 'ReturnCtrl'
 	})
-	
-   .state('login',{
-	url:'/login',
-	templateUrl:'templates/login.html',
-	controller:'LoginCtrl'
-	})
-		
+
 		
   .state('Settings.DisplayS',{
 	  url:'/DisplayS',
@@ -63,6 +60,11 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 		    }
 		}
     })
+	.state('login',{
+	url:'/login',
+	templateUrl:'templates/login.html',
+	controller:'LoginCtrl'
+	})
 	
   .state('app.DisplayV',{
 	  url:'/DisplayV',
@@ -111,7 +113,14 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 		}
 	})
 	
-  
+  .state('Settings.Socket',{
+	  url:'/Socket',
+	  views:{
+		  'menuContent':{
+			  templateUrl:'templates/Socket.html',
+		  }
+	  }
+  })
 	
   .state('Settings.OTP',{
      url: '/OTP',
@@ -121,6 +130,9 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 			}
 		}
 	});
-	$urlRouterProvider.otherwise('/login');
+
+  $urlRouterProvider.otherwise('/login');
+
+
 });
 

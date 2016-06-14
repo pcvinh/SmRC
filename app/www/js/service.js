@@ -24,6 +24,18 @@ angular.module('starter.factory', [])
     }
 })
 
+.factory('mysocket' , function(){
+    
+	var socket = io.connect('http://localhost:3000', { query: "token" });
+	socket.on('KeepAlive',function(){
+		console.log('Connected');
+	})
+	socket.on('RevertCmd',function(){
+		console.log('Command received');
+	})
+	return socket;
+})
+
 .factory('ReturnService', function($http) {
 	 var factory = {};
 	 factory.getChannels = function(){
