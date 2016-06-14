@@ -1,4 +1,5 @@
 var app = require('express')();
+var http = require('http').Server(app);
 var bodyParser = require('body-parser');
 var pubnub = require("pubnub")({
 ssl : true, // <- enable TLS Tunneling over TCP
@@ -47,7 +48,12 @@ app.get('/PairingInit', function (req, res) {
 		ChannelId : channelId,
 		STBName : STBName,
 		OTP : rs
+<<<<<<< HEAD
 	
+=======
+		
+		
+>>>>>>> b35445178191624f2d2672712413f5c5818bb624
 	});
   res.jsonp({OTP : rs});
 
@@ -95,7 +101,7 @@ app.get('/KeepAlive', function (req, res) {
 	//publish
 	var message = { ChannelId : channelId };
 	pubnub.publish({
-	channel :  channelId,
+	channel :  channelId + "_RC",
 	message : 'alive',
 	callback  : function(Command) { 
         console.log( "SUCCESS!", Command );
@@ -107,14 +113,14 @@ app.get('/KeepAlive', function (req, res) {
 	
 	//subscribe
     pubnub.subscribe({
-    channel : channelId + "_RC",
+    channel : channelId,
     message : function(Command) {
 		res.jsonp(Command);
 		
 		// Unsubscribe from 'channelId_RC,'
 	 
 		pubnub.unsubscribe({
-			channel : channelId + "_RC",
+			channel : channelId,
 		});
 	}
 	});
@@ -127,4 +133,64 @@ app.get('/KeepAlive', function (req, res) {
 		
 		
 })
+
+//socket.io
+
+//The query member of the options object is passed to the server on connection and parsed as a CGI style Querystring.
+
+var io = require('socket.io')(http);
+
+io.use(function(socket, next){
+    console.log("Query: ", socket.handshake.query);
+    //return the result of next() to accept the connection.
+    if (socket.handshake.query.Token) {
+		// decode token -- CHannelId
+		
+		var jwt = require('jsonwebtoken');
+		var decoded = jwt.decode(token);
+		
+		var ChannelId;
+        return next(socket, ChannelId);
+    }
+    //call next() with an Error if you need to reject the connection.
+    next(new Error('Authentication error'));
+});
+
+io.on('connection', function(socket, ChannelId){
+	
+	socket.on('disconnect', function(){
+		pubnub.unsubscribe({ 
+			channel : channelId + "_RC",
+		});
+	})
+	
+  console.log('front end connected');
+  // Subscribe to ChannelId_RC
+  	//subscribe
+    pubnub.subscribe({
+    channel : channelId + "_RC",
+    message : function(Command) {
+		socket.emit(Command);
+	}
+	});
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
