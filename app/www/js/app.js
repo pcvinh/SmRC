@@ -48,58 +48,23 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
     abstract:true,
     templateUrl: 'templates/menu.html',
 	cache:false,
-    controller: 'ReturnCtrl'
+    controller: 'ReturnChannelCtrl'
 	})
 
 		
-  .state('Settings.DisplayS',{
-	  url:'/DisplayS',
-		  views:{
-			  'Settings-tab':{
-				  templateUrl:'templates/menu3.html',
-		    }
-		}
-    })
 	.state('login',{
 	url:'/login',
 	templateUrl:'templates/login.html',
 	controller:'LoginCtrl'
 	})
 	
-  .state('app.DisplayV',{
-	  url:'/DisplayV',
-	  views:{
-		  'VOD-tab':{
-			  templateUrl:'templates/menu2.html',	
-		    }
-	  }
-  })
-  
-  .state('ChannelsC.DisplayC', {
-    url: '/DisplayC',
-    views: {
-      'Channel-tab': {
-       templateUrl: 'templates/menu.html',
-            }
-        }
-    })
-  
-  .state('app.VODs', {
-    url: '/VODs',
-    views: {
-      'menuContent': {
-       templateUrl: 'templates/VODs.html',
-	   controller:'ReturnVODCtrl'
-            }
-        }
-    })
-	
+ 
   .state('ChannelsC.Channels', {
     url: '/Channels',
     views: {
       'menuContent': {
        templateUrl: 'templates/Channels.html',
-       controller: 'ReturnCtrl'
+       controller: 'ReturnChannelCtrl'
             }
         }
     })
@@ -108,7 +73,8 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
     url: '/VODsong',
 	views:{
 	  'menuContent':{
-	   templateUrl:'templates/List.html',
+	   templateUrl:'templates/VODs.html',
+	   controller:'ReturnVODCtrl'
 			}
 		}
 	})
@@ -118,6 +84,7 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 	  views:{
 		  'menuContent':{
 			  templateUrl:'templates/Socket.html',
+			  controller:'SocketCtrl'
 		  }
 	  }
   })

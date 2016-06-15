@@ -1,5 +1,7 @@
 var app = require('express')();
 var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
 var bodyParser = require('body-parser');
 var pubnub = require("pubnub")({
 ssl : true, // <- enable TLS Tunneling over TCP
@@ -16,6 +18,11 @@ var db;
 app.use(bodyParser.json({strict: false})); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing 
 
+app.all('/', function(req, res, next) { // for cross domain allow
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	next();
+});
 // Initialize connection once
 MongoClient.connect(url, function(err, database) {
   if(err) throw err;
@@ -23,7 +30,7 @@ MongoClient.connect(url, function(err, database) {
   db = database;
 
   // Start the application after the database connection is ready
-  app.listen(3000);
+  http.listen(3000);
   console.log("Listening on port 3000");
 });
 
@@ -48,12 +55,6 @@ app.get('/PairingInit', function (req, res) {
 		ChannelId : channelId,
 		STBName : STBName,
 		OTP : rs
-<<<<<<< HEAD
-	
-=======
-		
-		
->>>>>>> b35445178191624f2d2672712413f5c5818bb624
 	});
   res.jsonp({OTP : rs});
 
@@ -82,11 +83,11 @@ app.post('/Pairing', function (req, res) {
 			return;
 		}
 	   console.log(item);
-	  var channelId = item.ChannelId, stbname = item.STBName;
-		  
+	  var channelId = item.value.ChannelId, stbname = item.value.STBName;
+		  console.log(channelId);
 	  var jwt = require('jsonwebtoken');
 	  var token = jwt.sign({ ChannelId: channelId },'asdasd');
-	  
+	  console.log(token);
 	  res.jsonp({token : token, stb : stbname});
 	  
 	 
@@ -124,39 +125,39 @@ app.get('/KeepAlive', function (req, res) {
 		});
 	}
 	});
-
-
-
-	
-
-
-		
-		
 })
 
 //socket.io
 
 //The query member of the options object is passed to the server on connection and parsed as a CGI style Querystring.
 
-var io = require('socket.io')(http);
 
-io.use(function(socket, next){
+/* io.use(function(socket, next){
     console.log("Query: ", socket.handshake.query);
-    //return the result of next() to accept the connection.
-    if (socket.handshake.query.Token) {
-		// decode token -- CHannelId
+    return the result of next() to accept the connection.
+    // if (socket.handshake.query.Token) {
+		decode token -- CHannelId
 		
-		var jwt = require('jsonwebtoken');
-		var decoded = jwt.decode(token);
+		// var jwt = require('jsonwebtoken');
+		// var decoded = jwt.decode(token);
 		
-		var ChannelId;
-        return next(socket, ChannelId);
-    }
-    //call next() with an Error if you need to reject the connection.
-    next(new Error('Authentication error'));
-});
+		// var ChannelId;
+        // return next();
+    // }
+    call next() with an Error if you need to reject the connection.
+    // next(new Error('Authentication error'));
+// }); */
 
-io.on('connection', function(socket, ChannelId){
+io.on('connection', function(socket){
+	console.log("Query: ", socket.handshake.query.token);
+	console.log("There is connection from front end");
+	
+	var jwt = require('jsonwebtoken');
+	var decoded = jwt.decode(socket.handshake.query.token);
+	
+	console.log(decoded);
+	var channelId = decoded.ChannelId;
+	console.log(channelId);
 	
 	socket.on('disconnect', function(){
 		pubnub.unsubscribe({ 
@@ -170,7 +171,8 @@ io.on('connection', function(socket, ChannelId){
     pubnub.subscribe({
     channel : channelId + "_RC",
     message : function(Command) {
-		socket.emit(Command);
+		console.log(Command);
+		socket.emit('KeepAlive', Command);
 	}
 	});
 });
