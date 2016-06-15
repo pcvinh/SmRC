@@ -1,0 +1,19 @@
+<ion-view title = "Socket"> 
+<div ng-controller = "SocketInitCtrl"></div>
+<div ng-controller = "LocalStorageCtrl"></div>
+ <ion-nav-bar class="bar-balanced">
+	 <ion-nav-buttons side="left">
+        <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+        </button>
+		</ion-nav-buttons>
+		<ion-nav-buttons side ="right">
+		 <button class="button button-icon button-clear ion-link" ng-click = "OpenSocket()">
+        </button>
+     </ion-nav-buttons>
+	 </ion-nav-bar>
+  <ion-content>
+  <!-- <label for="multipleSelect"> Select Token: </label><br>
+    <select name="multipleSelect" id="multipleSelect" ng-model="data.multipleSelect" multiple>
+      <option ng-repeat="Tokens in GetTokenArr" value="{{Tokens.token}}">{{Tokens.token}}</option>
+    </select><br> -->
+  </ion-content>
