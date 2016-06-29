@@ -27,57 +27,54 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
   
 
 	
-  .state('app', {
-    url: '/app',
-    abstract: true,
-    templateUrl: 'templates/menu2.html',
-	cache:false,
-	controller:'ReturnVODCtrl'
+  .state('VOD', {
+		url: '/VOD',
+		abstract: true,
+		templateUrl: 'templates/VOD.html',
+		controller:'VODCtrl'
     })
 
 	
   .state('Settings',{
-	  url:'/Settings',
-	  abstract:true,
-	  templateUrl: 'templates/menu3.html',
-	  cache: false,
+		url:'/Settings',
+		abstract:true,
+		templateUrl: 'templates/Settings.html',
     })
 	
-  .state('ChannelsC', {
-    url: '/ChannelsC',
-    abstract:true,
-    templateUrl: 'templates/menu.html',
-	cache:false,
-    controller: 'ReturnChannelCtrl'
+  .state('EPG', {
+		url: '/EPG',
+		abstract:true,
+		templateUrl: 'templates/EPG.html',
+		controller: 'EPGCtrl'
 	})
 
 		
 	.state('login',{
-	url:'/login',
-	templateUrl:'templates/login.html',
-	controller:'LoginCtrl'
+		url:'/login',
+		templateUrl:'templates/login.html',
+		controller:'LoginCtrl'
 	})
 	
  
-  .state('ChannelsC.Channels', {
-    url: '/Channels',
-    views: {
-      'menuContent': {
-       templateUrl: 'templates/Channels.html',
-       controller: 'ReturnChannelCtrl'
-            }
-        }
-    })
-	
-  .state('app.VODSong',{
-    url: '/VODsong',
-	views:{
-	  'menuContent':{
-	   templateUrl:'templates/VODs.html',
-	   controller:'ReturnVODCtrl'
+  .state('EPG.EPGList', {
+		url: '/EPGList',
+			views: {
+			    'menuContent': {
+					templateUrl: 'templates/EPGList.html',
+					controller: 'EPGCtrl'
+				}
 			}
-		}
-	})
+		})
+		
+  .state('VOD.VODsList',{
+		url: '/VODsList',
+			views:{
+				'menuContent':{
+					templateUrl:'templates/VODsList.html',
+					controller:'VODCtrl'
+				}
+			}
+		})
 	
   .state('Settings.Socket',{
 	  url:'/Socket',
@@ -90,16 +87,13 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
   })
 	
   .state('Settings.OTP',{
-     url: '/OTP',
-	 views:{
-	   'menuContent':{
-		templateUrl:'templates/OTP.html',
+		url: '/OTP',
+			views:{
+				'menuContent':{
+					templateUrl:'templates/OTP.html',
+				}
 			}
-		}
-	});
-
-  $urlRouterProvider.otherwise('/login');
-
+		});
 
 });
 

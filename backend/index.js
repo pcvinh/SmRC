@@ -160,8 +160,9 @@ io.on('connection', function(socket){
 	console.log(channelId);
 	
 	socket.on('disconnect', function(){
+		console.log("Disconnected");
 		pubnub.unsubscribe({ 
-			channel : channelId + "_RC",
+			channel : channelId + "_RC"
 		});
 	})
 	
