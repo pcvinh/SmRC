@@ -165,13 +165,45 @@ io.on('connection', function(socket, ChannelId){
     message : function(Command) {
 		socket.emit(Command);
 	}
-	});
+	}); 
 });
 
+// http://<ip>:<port>/pushCommand?ChannelId&STBName
+
+app.post('/pushCommand', function (req, res) {
+	 var token = req.query.token , Command = req.query.Command;
+	
+     var jwt = require('jsonwebtoken');
+	 var decoded = jwt.decode(token);
+	 
+	//publish
+	var message = { ChannelId : channelId };
+	pubnub.publish({
+	channel :  channelId , 
+	message : Command ,
+	
+	
+	res.jsonp('Success'); 
+	
+	});
+	
+	
+	
+// http://<ip>:<port>/pullCommand?ChannelId&STBName
+	
+app.post('/pullCommand', function (req, res) {
+	var token = req.query.token , Command = req.query.Command;
+	
+
+	
+	
+	
 
 
+	
 
-
+	
+	
 
 
 
