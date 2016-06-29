@@ -24,6 +24,34 @@ angular.module('starter.factory', [])
     }
 })
 
+.service('mysocket' , function(){
+    var socket;
+	
+	var alive_timeout;
+ 
+	this.connect = function(token) {
+		socket = io.connect('http://10.18.113.209:3000/', { query: "token="+token });
+		//socket = io('http://localhost:3000');
+		socket.on('KeepAlive',function(data){
+			console.log('Connected:' + data);
+			alive_timeout = setInterval(function(){ 
+				// disconnect
+				socket.disconnect();
+			 }, 5*60*1000);
+		})
+		
+		socket.on('RevertCmd',function(){
+			console.log('Command received');
+		})
+	}
+	
+	this.disconnect = function(){
+		socket.disconnect();
+		clearInterval(alive_timeout);
+	}
+	
+})
+
 .factory('ReturnService', function($http) {
 	 var factory = {};
 	 factory.getChannels = function(){

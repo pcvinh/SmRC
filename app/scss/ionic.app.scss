@@ -23,12 +23,3 @@ $positive: #53922B !default;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
-.my-view {
-  ion-list {
-    background: #000;
-    color: #fff;
-  }
-  ion-item {
-     text-align: center;
-  }
-}

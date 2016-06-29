@@ -3,7 +3,8 @@
   </ion-header-bar>
   <ion-content>
     <form>
-      <div class="list">
+      <!--div class="list" ng-controller = "LoadingCtrl"-->
+	  <div class="list">
         <label class="item item-input">
           <input type="text" ng-model="data.username">
         </label>
@@ -11,7 +12,7 @@
           <input type="password" ng-model="data.password">
         </label>
         <label class="item">
-          <button class="button button-block button-positive" type="submit" ng-click = "login()">Log in</button>
+          <button class="button button-block button-positive" type="submit" ng-click = "login()" >Log in</button>
         </label>
       </div>
     </form>

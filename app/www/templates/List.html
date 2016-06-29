@@ -1,4 +1,14 @@
 <ion-view title = "{{activeVOD.T}}"> 
+ <ion-nav-bar class="bar-balanced">
+	 <ion-nav-buttons side="left">
+        <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+        </button>
+		</ion-nav-buttons>
+		<ion-nav-buttons side ="right">
+		 <button class="button button-icon button-clear ion-link" ng-click = "OpenSocket()" ng-show = "TokenArr.length > 1">
+        </button>
+     </ion-nav-buttons>
+	 </ion-nav-bar>
   <ion-content>
   Search: <input ng-model="T">
     <ion-list>
