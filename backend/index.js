@@ -180,28 +180,36 @@ io.on('connection', function(socket){
 // http://<ip>:<port>/pushCommand?ChannelId&STBName
 
 app.post('/pushCommand', function (req, res) {
-	 var token = req.query.token , Command = req.query.Command;
+	var token = req.query.token , Command = req.query.Command;
+
+    var jwt = require('jsonwebtoken');
+	var decoded = jwt.decode(token);
 	
-     var jwt = require('jsonwebtoken');
-	 var decoded = jwt.decode(token);
-	 
+	console.log(decoded);
+    var channelId = decoded.ChannelId;
+	console.log(channelId);
+	
 	//publish
 	var message = { ChannelId : channelId };
 	pubnub.publish({
 	channel :  channelId , 
 	message : Command ,
+	function() {
+		res.jsonp('Success'); 
+	}
 	
 	
-	res.jsonp('Success'); 
 	
 	});
-	
+});
 	
 	
 // http://<ip>:<port>/pullCommand?ChannelId&STBName
 	
-app.post('/pullCommand', function (req, res) {
-	var token = req.query.token , Command = req.query.Command;
+// app.post('/pullCommand', function (req, res) {
+	// var token = req.query.token , Command = req.query.Command;
+	
+// });
 	
 
 	
