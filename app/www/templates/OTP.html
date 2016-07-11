@@ -3,14 +3,12 @@
     <form ng-submit="SubmitOTP()">
       <div class="list">
         <label class="item item-input">
-          <input type="tel" maxlength="6" inputmode="numeric" pattern="[0-9]*" title="Non-negative integral number" ng-model = "OTP">
+          <input type="tel" maxlength="6" inputmode="numeric" pattern="[0-9]*" title="Non-negative integral number" ng-model = "OTP" placeholder="Key In Your One Time Passoword Here....">
         </label>
         <label class="item">
           <button class="button button-block button-dark" type="submit">Submit</button>
         </label>
-		<p>Output Message : {{msg}}</p>
-		<p>StatusCode: {{statusval}}</p>
-		<p>Status: {{statustext}}</p>
+		<p> Key in Your One Time Password In The Box Above According To What Is On Your Set Top Box
       </div>
     </form>
   </ion-content>

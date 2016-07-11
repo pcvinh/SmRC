@@ -45,7 +45,6 @@ angular.module('starter.factory', [])
 	}
 	this.disconnect = function(){
 		socket.disconnect();
-		console.log('Disconnected');
 		clearInterval(alive_timeout);
 		}
 	})

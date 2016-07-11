@@ -5,12 +5,28 @@
         </button>
 		</ion-nav-buttons>
 		<ion-nav-buttons side ="right">
-		 <button class="button button-icon button-clear ion-link" ng-click = "ToggleSocket()" ng-show = "checkLocalStorageToken()">
+		 <button class="button button-icon button-clear ion-link" ng-click = "show()" ng-show = "checkLocalStorageToken()">
         </button>
      </ion-nav-buttons>
 	 </ion-nav-bar>
-  <ion-content>
-  <label for="TokenSelect" ng-show = "checkLocalStorageToken()"> Select Token</label><br>
-   <select ng-options="Token for Token in GetTokenArr track by Token.key" ng-model="Token" ng-show = "checkLocalStorageToken()">
-    </select><br>
+  <ion-content class="has-footer">
+    <ion-refresher  pulling-text="Pull to refresh"
+	refreshing-icon="ion-loop"
+    pulling-icon="ion-arrow-down-c"
+	refreshing-text="Loading..."
+	on-refresh="doRefresh()">
+      </ion-refresher>
+	  
+	<ion-list show-delete="ShowDeleteButton" show-reorder = "ShowReOrderButton">
+  <ion-item ng-repeat="ObjectArr in GetTokenArr track by $index" ng-click = "ToggleSocket(ObjectArr.token)"
+    <h2>{{ObjectArr.stb}}</h2><br> 
+	 <ion-delete-button class="ion-minus-circled" ng-click = "Delete($index)"></ion-delete-button>
+	<ion-reorder-button class="ion-navicon"
+                        on-reorder="moveItem(ObjectArr, $fromIndex, $toIndex)">
+    </ion-reorder-button>
+  </ion-item>
+</ion-list>
+ <button ng-click="scrollToTop()">
+     Back to top!
+    </button>
   </ion-content>
