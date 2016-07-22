@@ -24,6 +24,8 @@ angular.module('starter.factory', [])
     }
 })
 
+
+  
 .service('mysocket' , function(){
     var socket;
 	var alive_timeout;
@@ -48,6 +50,8 @@ angular.module('starter.factory', [])
 		clearInterval(alive_timeout);
 		}
 	})
+	
+  
 .factory('GetEPGService', function($http) { // epg
 	 var factory = {};
 	 factory.getEPG = function(){
@@ -55,6 +59,7 @@ angular.module('starter.factory', [])
 	};
 		return factory;
  })
+ 
  .factory('GetVodService', function($http){
 	 var factory = {};
 	 factory.getVODs = function(){

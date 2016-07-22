@@ -1,4 +1,4 @@
-<ion-view title = "Socket"> 
+<ion-view title = "Socket" ng-click="scrollToTop()"> 
  <ion-nav-bar class="bar-balanced">
 	 <ion-nav-buttons side="left">
         <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
@@ -18,7 +18,7 @@
       </ion-refresher>
 	  
 	<ion-list show-delete="ShowDeleteButton" show-reorder = "ShowReOrderButton">
-  <ion-item ng-repeat="ObjectArr in GetTokenArr track by $index" ng-click = "ToggleSocket(ObjectArr.token)"
+  <ion-item ng-repeat="ObjectArr in GetTokenArr track by $index" ng-click = "ToggleSocket(ObjectArr.token)"><!-- setClickedRow($index)" ng-class="{'selected':$index == selectedRow}" -->
     <h2>{{ObjectArr.stb}}</h2><br> 
 	 <ion-delete-button class="ion-minus-circled" ng-click = "Delete($index)"></ion-delete-button>
 	<ion-reorder-button class="ion-navicon"
@@ -26,7 +26,4 @@
     </ion-reorder-button>
   </ion-item>
 </ion-list>
- <button ng-click="scrollToTop()">
-     Back to top!
-    </button>
   </ion-content>

@@ -2,8 +2,17 @@
   "name": "StarHubProject1",
   "app_id": "",
   "proxies": [
-	{
-	"path": "/Pairing",
-	"proxyUrl": "http://localhost:3000/Pairing"
-	}]
+    {
+      "path": "/Pairing",
+      "proxyUrl": "http://localhost:3000/Pairing"
+    }
+  ],
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
 }

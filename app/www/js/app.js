@@ -5,6 +5,22 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 var app = angular.module('starter', ['ionic', 'starter.controllers','starter.factory'])
+
+.filter('startsWithAlphabet', function() {
+  return function(items, Alphabet) {
+  
+    var filtered = [];
+    var AlphabetMatch = new RegExp(Alphabet, 'i');
+    for (var i = 0; i < items.length; i++) {
+    var item = items[i];
+      if (AlphabetMatch.test(item.name.substring(0, 1))) {
+        filtered.push(item);
+      }
+    }
+    return filtered;
+  };
+})
+
 .config(['$ionicConfigProvider', function($ionicConfigProvider) {
     $ionicConfigProvider.tabs.position('bottom'); // other values: top
 }])
@@ -66,6 +82,30 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 			}
 		})
 		
+	.state('VOD.VODsWordList',{
+		url: '/VODsWordList',
+		views:{
+			'menuContent':{
+				templateUrl:'templates/VODsWordList.html',
+				controller:'VODCtrl'
+			}
+		}
+	})
+		
+	.state('VOD.VODsArtistList',{
+		url: '/VODsArtistList',
+		params:{
+			Param1: null
+		},
+		views: {
+			'menuContent': {
+				templateUrl: 'templates/VODsArtistList.html',
+				controller:'VODCtrl'
+     
+  }
+			}
+		})
+	
   .state('VOD.VODsList',{
 		url: '/VODsList',
 			views:{
@@ -75,6 +115,15 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 				}
 			}
 		})
+	.state('VOD.VODSlide',{
+		trl: '/VODSlide',
+		views:{
+			'menuContent':{
+				templateUrl:'templates/VODSlide.html',
+				controller:'VODCtrl'
+			}			
+		}
+	})
 	
   .state('Settings.Socket',{
 	  url:'/Socket',

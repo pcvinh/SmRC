@@ -245,9 +245,13 @@ angular.module('starter.controllers', [])
 	}
 	})
 	
-.controller('VODCtrl', function($scope, GetVodService, $window, $state, mysocket, $ionicScrollDelegate, $ionicActionSheet) {
+	
+	
+.controller('VODCtrl', function($scope, GetVodService, $window, $state, mysocket, $ionicScrollDelegate, $ionicActionSheet, $ionicSlideBoxDelegate, $ionicHistory, $stateParams ) {
+	
     GetVodService.getVODs().then(function(response) {
 	    $scope.vods = response.data;
+		$ionicSlideBoxDelegate.update();
 	})
 		$scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
 		$scope.checkLocalStorageToken = function() {
@@ -259,7 +263,45 @@ angular.module('starter.controllers', [])
 			}
 		}
 		
-		$scope.doRefresh = function() {
+		$scope.myGoBack = function() {
+			$ionicHistory.goBack();
+		};
+		
+		
+	
+
+	$scope.activeAlphabet = '';
+	$scope.activateAlphabet = function(Alphabet) {
+		$scope.activeAlphabet = Alphabet;
+	}
+	
+	// $scope.GoToPage = function(){
+	
+	 // if($scope.activeAlphabet == 'A'){
+		 // $state.go("VOD.VODsArtistList",{ param1: Alphabet });
+	 // }
+	 // else{
+		 // $state.go("VOD.VODsArtistList({ param2: Alphabet })");
+	 // }
+	 // }
+
+  
+  
+	$scope.WordArr = [	
+		{value: 0 , NumOfWord: 'One Word'},
+		{value: 1 , NumOfWord: 'Two Words'}, 
+		{value: 2 , NumOfWord: 'Three Words'},
+		{value: 3 , NumOfWord: 'Four Words'},
+		{value: 4 , NumOfWord: 'Five Words'},
+		{value: 5 , NumOfWord: 'Six Words'},
+		{value: 6 , NumOfWord: 'Seven Words'},
+		{value: 7 , NumOfWord: 'Eight Words'},
+		{value: 8 , NumOfWord: 'Nine Words And Above'}
+	]
+	
+
+	
+	$scope.doRefresh = function() {
     console.log('Refreshing!');
     $scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
     $scope.$broadcast('scroll.refreshComplete');
@@ -459,6 +501,11 @@ angular.module('starter.controllers', [])
 		}
 	}
 	
+	// $scope.selectedRow = null;  
+	// $scope.setClickedRow = function(index){  //function that sets the value of selectedRow to current index
+		// $scope.selectedRow = index;
+	// }
+	 
 	$scope.moveItem = function(ObjectArr, fromIndex, toIndex) {
 		$scope.GetTokenArr.splice(fromIndex, 1);
 		$scope.GetTokenArr.splice(toIndex, 0, ObjectArr );
