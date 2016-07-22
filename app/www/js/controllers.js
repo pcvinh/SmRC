@@ -253,6 +253,8 @@ angular.module('starter.controllers', [])
 	    $scope.vods = response.data;
 		$ionicSlideBoxDelegate.update();
 	})
+	
+	
 		$scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
 		$scope.checkLocalStorageToken = function() {
 		    if($scope.GetTokenArr.length > 0 ) {
