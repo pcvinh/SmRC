@@ -1,0 +1,36 @@
+<ion-view title = "{{activeAlphabet.T}}" ng-click="scrollToTop()"> 
+ <ion-nav-bar class="bar-balanced">
+	 <ion-nav-buttons side="left">
+        <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+        </button>
+		</ion-nav-buttons>
+		 <ion-nav-back-button class="button-clear"
+    ng-click="myGoBack()">
+    <i class="ion-arrow-left-c"></i> Back
+  </ion-nav-back-button>
+		<ion-nav-buttons side ="right">
+		 <button class="button button-icon button-clear ion-link" ng-click = "show()"  ng-show = "checkLocalStorageToken()">
+        </button>
+     </ion-nav-buttons>
+	 </ion-nav-bar>
+  <ion-content>
+   <ion-refresher pulling-text="Pull to refresh"
+	refreshing-icon="ion-loop"
+    pulling-icon="ion-arrow-down-c"
+	refreshing-text="Loading..."
+	on-refresh="doRefresh()">
+      </ion-refresher>
+  Search: <input ng-model="T"> 
+      <div ng-repeat = "VOD in vods.c">
+	  <div ng-repeat = "List in VOD.c">
+	  <ion-list>
+      <ion-item ng-repeat= "Songs in List.c | filter:T" ng-if = "activeVOD.T == VOD.T" ui-sref="VOD.VODsWordList">  <!--  | startsWithAlphabet : activeAlphabet -->
+		<div class="col">
+		<div>{{Songs.T }}</div>
+	
+		</ion-item>	  
+	  </ion-list>
+	  </div>
+	  </div>
+  </ion-content>
+</ion-view>
