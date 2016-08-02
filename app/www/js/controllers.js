@@ -245,9 +245,14 @@ angular.module('starter.controllers', [])
 	}
 	})
 	
-	
-	
-.controller('VODCtrl', function($scope, GetVodService, $window, $state, mysocket, $ionicScrollDelegate, $ionicActionSheet, $ionicSlideBoxDelegate, $ionicHistory, $stateParams ) {
+/* .controller('FilterController', ['filterFilter', function(filterFilter) {
+	 this.filteredArray = filterFilter($scope.vods, 'a');
+}])	
+	 */
+	 
+	 
+	 
+.controller('VODCtrl', function($scope, $rootScope,  GetVodService, $window, $state, mysocket, $ionicScrollDelegate, $ionicActionSheet, $ionicSlideBoxDelegate, $ionicHistory, $stateParams ) {
 	
     GetVodService.getVODs().then(function(response) {
 	    $scope.vods = response.data;
@@ -271,22 +276,102 @@ angular.module('starter.controllers', [])
 		
 		
 	
-
-	$scope.activeAlphabet = '';
-	$scope.activateAlphabet = function(Alphabet) {
-		$scope.activeAlphabet = Alphabet;
+	// $scope.alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+	
+	$scope.activate_Letter = function(letter, index) {
+		$rootScope.activeLetter = letter;
+		console.log($scope.activeLetter);
+		console.log(index);
 	}
 	
-	// $scope.GoToPage = function(){
-	
-	 // if($scope.activeAlphabet == 'A'){
-		 // $state.go("VOD.VODsArtistList",{ param1: Alphabet });
-	 // }
-	 // else{
-		 // $state.go("VOD.VODsArtistList({ param2: Alphabet })");
-	 // }
-	 // }
+	$scope.GoToPage = function(){
+		
 
+		
+	 if($scope.activeLetter.T == 'A'){
+		
+		 $state.go("VOD.VODsArtistList",{ letter : 1});
+	 }
+	 else if($scope.activeLetter.T == 'B'){
+		 $state.go("VOD.VODsArtistList",{ letter: 2});
+	 }
+	 else if($scope.activeLetter.T == 'C'){
+		 $state.go("VOD.VODsArtistList",{ letter: 3});
+	 }
+	  else if($scope.activeLetter.T == 'D'){
+		 $state.go("VOD.VODsArtistList",{ letter: 4});
+	 }
+	 else if($scope.activeLetter.T == 'E'){
+		 $state.go("VOD.VODsArtistList", {letter : 5});
+	 }
+	  else if($scope.activeLetter.T == 'F'){
+		 $state.go("VOD.VODsArtistList",{ letter: 6});
+	 }
+	 else if($scope.activeLetter.T == 'G'){
+		 $state.go("VOD.VODsArtistList",{ letter: 7});
+	 }
+	  else if($scope.activeLetter.T == 'H'){
+		 $state.go("VOD.VODsArtistList",{ letter: 8});
+	 }
+	 else if($scope.activeLetter.T == 'I'){
+		 $state.go("VOD.VODsArtistList", {letter : 9});
+	 }
+	  else if($scope.activeLetter.T == 'J'){
+		 $state.go("VOD.VODsArtistList",{ letter: 10});
+	 }
+	 else if($scope.activeLetter.T == 'K'){
+		 $state.go("VOD.VODsArtistList",{ letter: 11});
+	 }
+	  else if($scope.activeLetter.T == 'L'){
+		 $state.go("VOD.VODsArtistList",{ letter: 12});
+	 }
+	 else if($scope.activeLetter.T == 'M'){
+		 $state.go("VOD.VODsArtistList", {letter : 13});
+	 }
+	  else if($scope.activeLetter.T == 'N'){
+		 $state.go("VOD.VODsArtistList",{ letter: 14});
+	 }
+	 else if($scope.activeLetter.T == 'O'){
+		 $state.go("VOD.VODsArtistList",{ letter: 15});
+	 }
+	  else if($scope.activeLetter.T == 'P'){
+		 $state.go("VOD.VODsArtistList",{ letter: 16});
+	 }
+	 else if($scope.activeLetter.T == 'Q'){
+		 $state.go("VOD.VODsArtistList", {letter : 17});
+	 }
+	  else if($scope.activeLetter.T == 'R'){
+		 $state.go("VOD.VODsArtistList",{ letter: 18});
+	 }
+	 else if($scope.activeLetter.T == 'S'){
+		 $state.go("VOD.VODsArtistList",{ letter: 19});
+	 }
+	  else if($scope.activeLetter.T == 'T'){
+		 $state.go("VOD.VODsArtistList",{ letter: 20});
+	 }
+	 else if($scope.activeLetter.T == 'U'){
+		 $state.go("VOD.VODsArtistList", {letter : 21});
+	 }
+	  else if($scope.activeLetter.T == 'V'){
+		 $state.go("VOD.VODsArtistList",{ letter: 22});
+	 }
+	 else if($scope.activeLetter.T == 'W'){
+		 $state.go("VOD.VODsArtistList",{ letter: 23});
+	 }
+	  else if($scope.activeLetter.T == 'X'){
+		 $state.go("VOD.VODsArtistList",{ letter: 24});
+	 }
+	 else if($scope.activeLetter.T == 'Y'){
+		 $state.go("VOD.VODsArtistList", {letter : 25});
+	 }
+	 	 else if($scope.activeLetter.T == 'Z'){
+		 $state.go("VOD.VODsArtistList", {letter : 26});
+	 }
+	
+	 else{
+		$state.go("VOD.VODsArtistList", { letter: 0});
+	}
+	}
   
   
 	$scope.WordArr = [	

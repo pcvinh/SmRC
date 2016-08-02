@@ -6,24 +6,46 @@
 // 'starter.controllers' is found in controllers.js
 var app = angular.module('starter', ['ionic', 'starter.controllers','starter.factory'])
 
-.filter('startsWithAlphabet', function() {
-  return function(items, Alphabet) {
-  
-    var filtered = [];
-    var AlphabetMatch = new RegExp(Alphabet, 'i');
-    for (var i = 0; i < items.length; i++) {
-    var item = items[i];
-      if (AlphabetMatch.test(item.name.substring(0, 1))) {
-        filtered.push(item);
-      }
-    }
-    return filtered;
-  };
-})
 
+// .filter('startsWithLetter', function () {
+  // return function (items, letter) {
+	
+    // var filtered = [];
+    // var letterMatch = new RegExp(letter, 'i');
+    // for (var i = 0; i < items.length; i++) {
+      // var item = items[i];
+      // if (letterMatch.test(item.T.substring(0, 1))){
+        // filtered.push(item);
+		
+      // }
+    // }
+	// console.log(filtered);
+	// console.log(items.length);
+	// console.log(typeof items);
+    // return filtered;
+  // };
+// })
+
+// .filter('firstLetter', function () {
+    // return function (input, letter) {
+        // input = input || [];
+        // var out = [];
+        // input.forEach(function (item) {
+            // console.log("current item is", item, item.charAt(0));
+            // if (item.charAt(0).toLowerCase() == letter) {
+                // out.push(item);
+            // }
+        // });
+        // return out;
+    // }
+// })
+
+	
 .config(['$ionicConfigProvider', function($ionicConfigProvider) {
     $ionicConfigProvider.tabs.position('bottom'); // other values: top
 }])
+
+
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -93,18 +115,19 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 	})
 		
 	.state('VOD.VODsArtistList',{
-		url: '/VODsArtistList',
-		params:{
-			Param1: null
-		},
+		url: '/VODsArtistList?letter',
 		views: {
 			'menuContent': {
 				templateUrl: 'templates/VODsArtistList.html',
-				controller:'VODCtrl'
-     
-  }
+				controller:function($scope, $stateParams) {
+					$scope.letter= $stateParams.letter;	
+					$scope.artis_list = $scope.activeLetter;
+					
+					console.log($scope.artis_list);
+				}	
 			}
-		})
+		}
+	})
 	
   .state('VOD.VODsList',{
 		url: '/VODsList',
