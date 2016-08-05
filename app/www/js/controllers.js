@@ -59,10 +59,10 @@ angular.module('starter.controllers', [])
 		$scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
 		
 		$scope.doRefresh = function() {
-    console.log('Refreshing!');
-    $scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
-    $scope.$broadcast('scroll.refreshComplete');
-    }
+			console.log('Refreshing!');
+			$scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
+			$scope.$broadcast('scroll.refreshComplete');
+		}
 		
 		$scope.checkLocalStorageToken = function() {
 		    if($scope.GetTokenArr.length > 0 ) {
@@ -74,23 +74,14 @@ angular.module('starter.controllers', [])
 			}
 		}
 		
-        // $scope.SwitchToSocket = function() {
-			// if($scope.GetTokenArr.length == 1) {
-			    // mysocket.connect($scope.GetTokenArr[0]);
-				// console.log("Connected");
-			// }
-			// else {
-				// $state.go('Settings.Socket');
-			// }
-		// }
-		
+    
 	    $scope.scrollToTop = function() {
 			$ionicScrollDelegate.scrollTop();
 		}
   
 
-  var connected;
-  $scope.show = function() {
+	var connected;
+	$scope.showActionSheet = function() {
 		if(connected == true) {
 			if($scope.activeChannel) { 
 				var hideSheet = $ionicActionSheet.show({
@@ -244,11 +235,7 @@ angular.module('starter.controllers', [])
 		}
 	}
 	})
-	
-/* .controller('FilterController', ['filterFilter', function(filterFilter) {
-	 this.filteredArray = filterFilter($scope.vods, 'a');
-}])	
-	 */
+
 	 
 	 
 	 
@@ -270,145 +257,153 @@ angular.module('starter.controllers', [])
 			}
 		}
 		
-		$scope.myGoBack = function() {
+		
+		
+		$scope.previousPage = function() {
 			$ionicHistory.goBack();
 		};
-		
-		
 	
-	// $scope.alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 	
-	$scope.activate_Letter = function(letter, index) {
+		$scope.activate_Letter = function(letter, index) {
 		$rootScope.activeLetter = letter;
-		console.log($scope.activeLetter);
-		console.log(index);
-	}
+		console.log($rootScope.activeLetter);
+		
+		}
+		
+		$scope.active_Artist = function (Artist, index) {
+			$rootScope.activeArtist = Artist;
+		}
 	
-	$scope.GoToPage = function(){
+		$scope.active_Word = function (NumberOfWords, index) {
+			$rootScope.activeWord = NumberOfWords;
+		}
 		
-
-		
-	 if($scope.activeLetter.T == 'A'){
-		
-		 $state.go("VOD.VODsArtistList",{ letter : 1});
-	 }
-	 else if($scope.activeLetter.T == 'B'){
-		 $state.go("VOD.VODsArtistList",{ letter: 2});
-	 }
-	 else if($scope.activeLetter.T == 'C'){
-		 $state.go("VOD.VODsArtistList",{ letter: 3});
-	 }
-	  else if($scope.activeLetter.T == 'D'){
-		 $state.go("VOD.VODsArtistList",{ letter: 4});
-	 }
-	 else if($scope.activeLetter.T == 'E'){
-		 $state.go("VOD.VODsArtistList", {letter : 5});
-	 }
-	  else if($scope.activeLetter.T == 'F'){
-		 $state.go("VOD.VODsArtistList",{ letter: 6});
-	 }
-	 else if($scope.activeLetter.T == 'G'){
-		 $state.go("VOD.VODsArtistList",{ letter: 7});
-	 }
-	  else if($scope.activeLetter.T == 'H'){
-		 $state.go("VOD.VODsArtistList",{ letter: 8});
-	 }
-	 else if($scope.activeLetter.T == 'I'){
-		 $state.go("VOD.VODsArtistList", {letter : 9});
-	 }
-	  else if($scope.activeLetter.T == 'J'){
-		 $state.go("VOD.VODsArtistList",{ letter: 10});
-	 }
-	 else if($scope.activeLetter.T == 'K'){
-		 $state.go("VOD.VODsArtistList",{ letter: 11});
-	 }
-	  else if($scope.activeLetter.T == 'L'){
-		 $state.go("VOD.VODsArtistList",{ letter: 12});
-	 }
-	 else if($scope.activeLetter.T == 'M'){
-		 $state.go("VOD.VODsArtistList", {letter : 13});
-	 }
-	  else if($scope.activeLetter.T == 'N'){
-		 $state.go("VOD.VODsArtistList",{ letter: 14});
-	 }
-	 else if($scope.activeLetter.T == 'O'){
-		 $state.go("VOD.VODsArtistList",{ letter: 15});
-	 }
-	  else if($scope.activeLetter.T == 'P'){
-		 $state.go("VOD.VODsArtistList",{ letter: 16});
-	 }
-	 else if($scope.activeLetter.T == 'Q'){
-		 $state.go("VOD.VODsArtistList", {letter : 17});
-	 }
-	  else if($scope.activeLetter.T == 'R'){
-		 $state.go("VOD.VODsArtistList",{ letter: 18});
-	 }
-	 else if($scope.activeLetter.T == 'S'){
-		 $state.go("VOD.VODsArtistList",{ letter: 19});
-	 }
-	  else if($scope.activeLetter.T == 'T'){
-		 $state.go("VOD.VODsArtistList",{ letter: 20});
-	 }
-	 else if($scope.activeLetter.T == 'U'){
-		 $state.go("VOD.VODsArtistList", {letter : 21});
-	 }
-	  else if($scope.activeLetter.T == 'V'){
-		 $state.go("VOD.VODsArtistList",{ letter: 22});
-	 }
-	 else if($scope.activeLetter.T == 'W'){
-		 $state.go("VOD.VODsArtistList",{ letter: 23});
-	 }
-	  else if($scope.activeLetter.T == 'X'){
-		 $state.go("VOD.VODsArtistList",{ letter: 24});
-	 }
-	 else if($scope.activeLetter.T == 'Y'){
-		 $state.go("VOD.VODsArtistList", {letter : 25});
-	 }
-	 	 else if($scope.activeLetter.T == 'Z'){
-		 $state.go("VOD.VODsArtistList", {letter : 26});
-	 }
+		$scope.GoToVODArtistPage = function() {
 	
-	 else{
-		$state.go("VOD.VODsArtistList", { letter: 0});
-	}
+			if($scope.activeLetter.T == 'A'){
+				$state.go("VOD.VODsArtistList",{ letter : 1});
+			}
+			
+			else if($scope.activeLetter.T == 'B'){
+				$state.go("VOD.VODsArtistList",{ letter: 2});
+			}
+			
+			else if($scope.activeLetter.T == 'C'){
+				$state.go("VOD.VODsArtistList",{ letter: 3});
+			}
+			
+			else if($scope.activeLetter.T == 'D'){
+				$state.go("VOD.VODsArtistList",{ letter: 4});
+			}
+			
+			else if($scope.activeLetter.T == 'E'){
+				$state.go("VOD.VODsArtistList", {letter : 5});
+			}	
+			
+			else if($scope.activeLetter.T == 'F'){
+				$state.go("VOD.VODsArtistList",{ letter: 6});
+			}
+	 
+			else if($scope.activeLetter.T == 'G'){
+				$state.go("VOD.VODsArtistList",{ letter: 7});
+			}
+	 
+			else if($scope.activeLetter.T == 'H'){
+				$state.go("VOD.VODsArtistList",{ letter: 8});
+			}
+	 
+			else if($scope.activeLetter.T == 'I'){
+				$state.go("VOD.VODsArtistList", {letter : 9});
+			}
+	 
+			else if($scope.activeLetter.T == 'J'){
+				$state.go("VOD.VODsArtistList",{ letter: 10});
+			}
+	 
+			else if($scope.activeLetter.T == 'K'){
+				$state.go("VOD.VODsArtistList",{ letter: 11});
+			}
+	 
+			else if($scope.activeLetter.T == 'L'){
+				$state.go("VOD.VODsArtistList",{ letter: 12});
+			}
+	 
+			else if($scope.activeLetter.T == 'M'){
+				$state.go("VOD.VODsArtistList", {letter : 13});
+			}
+	 
+			else if($scope.activeLetter.T == 'N'){
+				$state.go("VOD.VODsArtistList",{ letter: 14});
+			}
+	 
+			else if($scope.activeLetter.T == 'O'){
+				$state.go("VOD.VODsArtistList",{ letter: 15});
+			}
+	 
+			else if($scope.activeLetter.T == 'P'){
+				$state.go("VOD.VODsArtistList",{ letter: 16});
+			}
+	 
+			else if($scope.activeLetter.T == 'Q'){
+				$state.go("VOD.VODsArtistList", {letter : 17});
+			}
+	 
+			else if($scope.activeLetter.T == 'R'){
+				$state.go("VOD.VODsArtistList",{ letter: 18});
+			}
+	 
+			else if($scope.activeLetter.T == 'S'){
+				$state.go("VOD.VODsArtistList",{ letter: 19});
+			}
+	 
+			else if($scope.activeLetter.T == 'T'){
+				$state.go("VOD.VODsArtistList",{ letter: 20});
+			}
+	 
+			else if($scope.activeLetter.T == 'U'){
+				$state.go("VOD.VODsArtistList", {letter : 21});
+			}
+	 
+			else if($scope.activeLetter.T == 'V'){
+				$state.go("VOD.VODsArtistList",{ letter: 22});
+			}
+	 
+			else if($scope.activeLetter.T == 'W'){
+				$state.go("VOD.VODsArtistList",{ letter: 23});
+			}
+		
+			else if($scope.activeLetter.T == 'X'){
+				$state.go("VOD.VODsArtistList",{ letter: 24});
+			}
+	 
+			else if($scope.activeLetter.T == 'Y'){
+				$state.go("VOD.VODsArtistList", {letter : 25});
+			}
+	 
+			else if($scope.activeLetter.T == 'Z'){
+				$state.go("VOD.VODsArtistList", {letter : 26});
+			}
+	
+			else{
+				$state.go("VOD.VODsArtistList", { letter: 0});
+			}
 	}
   
-  
-	$scope.WordArr = [	
-		{value: 0 , NumOfWord: 'One Word'},
-		{value: 1 , NumOfWord: 'Two Words'}, 
-		{value: 2 , NumOfWord: 'Three Words'},
-		{value: 3 , NumOfWord: 'Four Words'},
-		{value: 4 , NumOfWord: 'Five Words'},
-		{value: 5 , NumOfWord: 'Six Words'},
-		{value: 6 , NumOfWord: 'Seven Words'},
-		{value: 7 , NumOfWord: 'Eight Words'},
-		{value: 8 , NumOfWord: 'Nine Words And Above'}
-	]
 	
-
+	
 	
 	$scope.doRefresh = function() {
-    console.log('Refreshing!');
-    $scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
-    $scope.$broadcast('scroll.refreshComplete');
+		console.log('Refreshing!');
+		$scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
+		$scope.$broadcast('scroll.refreshComplete');
     }
 	
-		// $scope.SwitchToSocket = function() {
-		    // if($scope.GetTokenArr.length == 1) {
-			    // mysocket.connect($scope.GetTokenArr[0]);
-				// console.log("Connected");
-		// }
-			// else{
-				// $state.go('Settings.Socket');
-			// }
-		// }
-		  $scope.scrollToTop = function() {
-    $ionicScrollDelegate.scrollTop();
-  }
+	$scope.scrollToTop = function() {
+		$ionicScrollDelegate.scrollTop();
+	}	
   
    var connected;
-   $scope.show = function() {
+   $scope.showActionSheet = function() {
 		if(connected == true) {
 			if($scope.activeVOD) { 
 				var hideSheet = $ionicActionSheet.show({
@@ -588,11 +583,7 @@ angular.module('starter.controllers', [])
 		}
 	}
 	
-	// $scope.selectedRow = null;  
-	// $scope.setClickedRow = function(index){  //function that sets the value of selectedRow to current index
-		// $scope.selectedRow = index;
-	// }
-	 
+	
 	$scope.moveItem = function(ObjectArr, fromIndex, toIndex) {
 		$scope.GetTokenArr.splice(fromIndex, 1);
 		$scope.GetTokenArr.splice(toIndex, 0, ObjectArr );
@@ -606,7 +597,7 @@ angular.module('starter.controllers', [])
 }
 	
 	
-	$scope.show = function() {
+	$scope.showActionSheet = function() {
 
 		var hideSheet = $ionicActionSheet.show({
 			buttons: [

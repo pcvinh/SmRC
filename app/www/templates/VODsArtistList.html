@@ -5,15 +5,15 @@
         </button>
 		</ion-nav-buttons>
 		 <ion-nav-back-button class="button-clear"
-    ng-click="myGoBack()">
+    ng-click="previousPage()">
     <i class="ion-arrow-left-c"></i> Back
   </ion-nav-back-button>
 		<ion-nav-buttons side ="right">
-		 <button class="button button-icon button-clear ion-link" ng-click = "show()"  ng-show = "checkLocalStorageToken()">
+		 <button class="button button-icon button-clear ion-link" ng-click = "showActionSheet()"  ng-show = "checkLocalStorageToken()">
         </button>
      </ion-nav-buttons>
 	 </ion-nav-bar>
-  <ion-content>
+  <ion-content class="has-footer">
    <ion-refresher pulling-text="Pull to refresh"
 	refreshing-icon="ion-loop"
     pulling-icon="ion-arrow-down-c"
@@ -23,9 +23,9 @@
       <!--div ng-repeat = "VOD in vods.c">
 	  <div ng-repeat = "List in VOD.c"-->
 	  <ion-list>
-      <ion-item ng-repeat= "Songs in artis_list.c" ui-sref="VOD.VODsWordList">  
+      <ion-item ng-repeat= "Artist in artis_list.c" ng-click = "active_Artist(Artist, $index)" ng-class="{active: activeArtist == Artist}"  ui-sref="VOD.VODsWordList">  
 		<div class="col"><!-- | startsWithLetter : activeLetter -->
-		<div>{{Songs.T}}</div>
+		<div>{{Artist.T}}</div>
 	
 		</ion-item>	  
 	  </ion-list>

@@ -109,7 +109,23 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 		views:{
 			'menuContent':{
 				templateUrl:'templates/VODsWordList.html',
-				controller:'VODCtrl'
+				controller:function($scope, $stateParams) {
+					
+					$scope.wordArr = $scope.activeArtist;   
+					
+					$scope.wordArr = [	
+					{Num: 1 , NumOfWord: 'One Word'},
+					{Num: 2 , NumOfWord: 'Two Words'}, 
+					{Num: 3 , NumOfWord: 'Three Words'},
+					{Num: 4 , NumOfWord: 'Four Words'},
+					{Num: 5 , NumOfWord: 'Five Words'},
+					{Num: 6 , NumOfWord: 'Six Words'},
+					{Num: 7 , NumOfWord: 'Seven Words'},
+					{Num: 8 , NumOfWord: 'Eight Words'},
+					{Num: 9 , NumOfWord: 'Nine Words And Above'}
+				]
+	
+   				}	
 			}
 		}
 	})
@@ -123,7 +139,6 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 					$scope.letter= $stateParams.letter;	
 					$scope.artis_list = $scope.activeLetter;
 					
-					console.log($scope.artis_list);
 				}	
 			}
 		}
@@ -143,7 +158,26 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 		views:{
 			'menuContent':{
 				templateUrl:'templates/VODSlide.html',
-				controller:'VODCtrl'
+				controller:function($scope){
+					
+					$scope.testArr = $scope.activeWord;
+					
+					
+					$scope.testArr = [	
+						{ title: 'dsvcds'},
+						{ title: 'L'},
+						{ title: 'Li'}, 
+						{ title: 'Lis'},
+						{ title: 'List'},
+						{ title: 'ListO'},
+						{ title: 'ListOf'},
+						{ title: 'ListOfS'}, 
+						{ title: 'ListOfSo'},
+						{ title: 'ListOfSon'},
+						{ title: 'ListOfSong'},	
+					]
+					
+				}
 			}			
 		}
 	})

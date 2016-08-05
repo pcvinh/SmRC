@@ -5,11 +5,11 @@
         </button>
 		</ion-nav-buttons>
 		<ion-nav-buttons side ="right">
-		 <button class="button button-icon button-clear ion-link" ng-click = "show()"  ng-show = "checkLocalStorageToken()">
+		 <button class="button button-icon button-clear ion-link" ng-click = "showActionSheet()"  ng-show = "checkLocalStorageToken()">
         </button>
      </ion-nav-buttons>
 	 </ion-nav-bar>
-  <ion-content>
+  <ion-content class="has-footer">
    <ion-refresher pulling-text="Pull to refresh"
 	refreshing-icon="ion-loop"
     pulling-icon="ion-arrow-down-c"
@@ -18,7 +18,7 @@
       </ion-refresher>
       <div ng-repeat = "VOD in vods.c">
 	  <ion-list>
-      <ion-item ng-repeat= "letter in VOD.c" ng-if = "activeVOD.T == VOD.T" ng-click="activate_Letter(letter, $index);GoToPage()" ng-class="{active: activeLetter == letter}" >
+      <ion-item ng-repeat= "letter in VOD.c" ng-if = "activeVOD.T == VOD.T" ng-click="activate_Letter(letter, $index);GoToVODArtistPage()" ng-class="{active: activeLetter == letter}" >
 		<div class="col">
 		<div>{{letter.T }}</div>
 	
