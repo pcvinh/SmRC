@@ -178,14 +178,14 @@ angular.module('starter.controllers', [])
 	var connected;
 	var TokenId;
 		$scope.$watch('connected', function() {
-		$scope.showActionSheet = function() {
+		
         // alert('hey, connected has changed!');
 		console.log(connected);
     });
 	// $scope.$apply(function () {
             // connected;
         // });
-	
+	$scope.showActionSheet = function() {
 		if(connected == true) {
 			//if($scope.activeChannel) { 
 				// var hideSheet = $ionicActionSheet.show({
