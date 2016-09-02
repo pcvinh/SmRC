@@ -5,7 +5,7 @@
         </button>
 		</ion-nav-buttons>
 		<ion-nav-buttons side ="right">
-		 <button class="button button-icon button-clear ion-link" ng-class="{'ion-ios-gear': !Clicked}" ng-click = "showActionSheet();!Clicked" ng-show = "checkLocalStorageToken()">
+		 <button class="button button-icon button-clear ion-link" ng-class="{'ion-ios-gear': !Clicked}" ng-click = "showActionSheet();!Clicked" ng-disabled = "!checkLocalStorageToken()" > 
         </button>
      </ion-nav-buttons>
 	 </ion-nav-bar>
@@ -18,13 +18,15 @@
       </ion-refresher>
     <ion-list>
 	<div ng-repeat="serie in epgs.ChannelList.Series">
-     <ion-item ng-repeat= "Channel in serie.Service" ng-if = "activeChannel.ChannelName.content == Channel.ChannelName.content">
+     <ion-item ng-repeat= "Channel in serie.Service track by $index" ng-if = "activeChannel.ChannelName.content == Channel.ChannelName.content">
 	  {{Channel.ChannelName.content}}<br>
 	  {{Channel.ChannelID}}<br>
+	  	
 	  <button button class="ion-record"></button>
-	  <button button class="ion-ios-star-outline" ng-class="{'ion-ios-star': liked, 'ion-ios-star-outline': !liked}" ng-click="liked=!liked;"></button> 
+	  <button button class="ion-ios-star"  ng-click="AddToFavourite($index)"></button> 
       <button button class="ion-alert-circled"></button>
 	  <button button class="ion-ios-unlocked-outline" ng-class="{'ion-ios-locked': locked, 'ion-ios-unlocked-outline': !locked}" ng-click="locked=!locked;"></button><br>
+	  <h2>{{AddFavoriteMessage}}</h2>
 	  {{Channel.ChannelDescription.content }}<br>
     </div>
 	</div>

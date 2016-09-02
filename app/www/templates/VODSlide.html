@@ -26,24 +26,19 @@
       <div ng-repeat = "List in VOD.c"> -->
 	  
 	  <ion-slide-box>
-      <ion-slide ng-repeat= "Songs in testArr" ng-if = "Songs.title.length == activeWord.Num"> 
+      <ion-slide ng-repeat= "Songs in testArr" ng-if = "Songs.title.split(' ').length == activeWord.Num "> 
 		<div class="col">
 		<h2><strong>{{Songs.title}}</strong></h2><br>
-		<h2><strong>{{Songs.title.length}}</strong></h2><br>
 	  <button button class="ion-play"></button>
 	  <button button class="ion-pause"></button>
 	  <button button class="ion-stop"></button>	  
 		</div>
-	
-	  <div class="padding text-left" ng-controller="RatingsArrCtrl">
-        <h3>Rate the VOD</h3>
-        <div>
-          <a href="javascript:" ng-repeat="r in ratingArr" class="padding" style="text-decoration:none;">
-            <i class="icon {{r.icon}}" ng-click="setRating(r.value)"></i>
-          </a>
+	<br>
+	 <div class="container" ng-controller="RatingsController">
+	 <h2> Rate The Song </h2><br>
+            <div star-rating rating="starRating" click="click(param)"></div>
         </div>
-      </div>
-	  <br>
+ 
 		</ion-slide>	  
 	  </ion-slide-box>
 	

@@ -4,7 +4,15 @@
   "proxies": [
     {
       "path": "/Pairing",
-      "proxyUrl": "http://localhost:3000/Pairing"
+      "proxyUrl": "http://172.28.2.161:3000/Pairing"
+    },
+	{
+      "path": "/pushCommand",
+      "proxyUrl": "http://172.28.2.161:3000/pushCommand"
+    },
+	{
+      "path": "/pullCommand",
+      "proxyUrl": "http://172.28.2.161:3000/pullCommand"
     }
   ],
   "gulpStartupTasks": [

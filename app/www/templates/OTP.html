@@ -1,6 +1,6 @@
  <ion-view title = "OTP"> 
   <ion-content ng-controller = "OTPCtrl">
-    <form ng-submit="SubmitOTP()">
+    <form ng-submit="SubmitOTP(OTP)">
       <div class="list">
         <label class="item item-input">
           <input type="tel" maxlength="6" inputmode="numeric" pattern="[0-9]*" title="Non-negative integral number" ng-model = "OTP" placeholder="Key In Your One Time Passoword Here....">
@@ -8,7 +8,7 @@
         <label class="item">
           <button class="button button-block button-dark" type="submit">Submit</button>
         </label>
-		<p> Key in Your One Time Password In The Box Above According To What Is On Your Set Top Box
+		<p> Key in Your One Time Password In The Box Above According To What Is On Your Set Top Box</p><br>
       </div>
     </form>
   </ion-content>

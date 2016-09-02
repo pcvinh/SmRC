@@ -17,13 +17,23 @@
 	on-refresh="doRefresh()">
       </ion-refresher>
 	  
-	<ion-list show-delete="ShowDeleteButton" show-reorder = "ShowReOrderButton">
-  <ion-item ng-repeat="ObjectArr in GetTokenArr track by $index" ng-click = "ToggleSocket(ObjectArr.token)">
-    <h2>{{ObjectArr.stb}}</h2><br> 
+	<ion-list show-delete="ShowDeleteButton" show-reorder = "ShowReOrderButton" > 
+
+	<!-- <div ng-repeat = "ObjectDataArr in ObjectData"> -->
+  <ion-item ng-repeat="ObjectArr in Connections track by $index"  ng-if ="ObjectArr.stb_id == ObjectDataArr.cid" ng-show = "CheckAlive()">
+    <h2>{{ObjectArr.stb}}</h2>
+	<div class="item-checkbox">
+	 <label class="checkbox">
+        <input type="checkbox" ng-click="clickItem(item);OpenSocket(ObjectArr.token)"  ng-model="item.checked">
+     </label>
+	 </div>
 	 <ion-delete-button class="ion-minus-circled" ng-click = "Delete($index)"></ion-delete-button>
 	<ion-reorder-button class="ion-navicon"
                         on-reorder="moveItem(ObjectArr, $fromIndex, $toIndex)">
     </ion-reorder-button>
   </ion-item>
+ <!--  </div> -->
 </ion-list>
+
+
   </ion-content>

@@ -1,245 +1,395 @@
 angular.module('starter.controllers', [])
 
-.controller('OTPCtrl',function($scope,$http) {
-    function _serialize(obj) {
-	    var str = [];
-		for(var p in obj) {
-		    if (Array.isArray( obj[p])) {
-			    for(var i in obj[p])
-			        str.push(encodeURIComponent(p) + '[]=' + encodeURIComponent(obj[p][i]));
-            } 
-			else {
-			    str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
-			}
-		}	
-			return str.join('&');
-}
+.controller('OTPCtrl',function($scope,$http, mysocket , myTimeout) {
 	
-  $scope.OTP;
-  $scope.SubmitOTP = function() {	
-       var url;
-	   url = '/Pairing';
-	   $http({
-			method  : 'POST',
-			url     : url,
-			data    : _serialize({OTP : $scope.OTP}),  // pass in data as strings    
-			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
-		}).then(function(response) {
-			if(response.data) { 
-				var localStorageTokenString = localStorage.getItem("TokenArr");
-				var TokenArr;
-			if(localStorageTokenString == null || localStorageTokenString == undefined){
-				TokenArr  = [];
-			}
-			else {
-				TokenArr = JSON.parse(localStorageTokenString);
-			}
-			TokenArr.push({token : response.data.token, stb : response.data.stb});
-			localStorage.setItem("TokenArr", JSON.stringify(TokenArr));
-			console.log(TokenArr);
-			$scope.msg = "ServiceExists";
-			$scope.statusval = response.status;
-			$scope.statustext = response.statusText;
-			}
-		},
-		function(response) { 
-			$scope.msg = "Service not Exists";
-			$scope.statusval = response.status;
-			$scope.statustext = response.statusText;
-		});
-
+	
+	$scope.showOTPMatch = myTimeout.showOTPMatch;
+	$scope.Connections = mysocket.Connections;
+	$scope.CurrentConnections = mysocket.CurrentConnections;
+	$scope.SubmitOTP = function(otp, stb_name) {
+		mysocket.Pairing(otp, stb_name, function(data) {
+			$scope.showOTPMatch();
+			console.log(mysocket.Connections);
+			$scope.Connections = mysocket.Connections;
+			
+			
+		})
 	}
 })
  
-.controller('EPGCtrl', function($scope, GetEPGService, $window, $state, mysocket, $ionicScrollDelegate, $ionicActionSheet) {
-    GetEPGService.getEPG().then(function(response) {
-        $scope.epgs = response.data;
+ 
+.controller('FavouriteCtrl', function($window, $scope, GetEPGService, $state, $ionicActionSheet, $ionicScrollDelegate, $ionicHistory){
+	 	
+	$scope.GetFavouriteArr = ($window.localStorage.getItem('FavouriteArr')!==null) ? JSON.parse($window.localStorage.getItem('FavouriteArr')) : [];
+	console.log($scope.GetFavouriteArr);
+	GetEPGService.getEPG().then(function(response) {
+		$scope.epgs = response.data;
 	})
 	
-		$scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
-		
-		$scope.doRefresh = function() {
-			console.log('Refreshing!');
-			$scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
-			$scope.$broadcast('scroll.refreshComplete');
+	$scope.ToggleDelete = function() {
+		$scope.ShowDeleteButton  = !$scope.ShowDeleteButton;
 		}
 		
-		$scope.checkLocalStorageToken = function() {
-		    if($scope.GetTokenArr.length > 0 ) {
-			    return true
+	$scope.doRefresh = function() {
+		console.log('Refreshing!');
+		$scope.GetFavouriteArr = ($window.localStorage.getItem('FavouriteArr')!==null) ? JSON.parse($window.localStorage.getItem('FavouriteArr')) : [];
+		$scope.$broadcast('scroll.refreshComplete');
+	}
+		
+	$scope.showActionSheet = function() {
+		var hideSheet = $ionicActionSheet.show({
+			buttons: [
+			],
+			
+			destructiveText: 'Delete',
+			cancelText: 'Cancel',
+			cancel: function() {
+				$scope.ShowDeleteButton = false;
+			},
+			
+			buttonClicked: function(index) {
+			},
+			
+			destructiveButtonClicked: function() {
+				$scope.ToggleDelete();	
+				return true;
+			}
+		});
+	}
+	
+	$scope.RemoveFavourite = function(index) {
+		$scope.GetFavouriteArr.splice(index, 1);    
+		localStorage.removeItem($scope.GetFavouriteArr);
+		localStorage.setItem("FavouriteArr", JSON.stringify($scope.GetFavouriteArr));
+		console.log("Deleted");
+		console.log($scope.GetFavouriteArr)
+	}
+		
+	$scope.previousPage = function() {
+		$ionicHistory.goBack();
+	};
+	
+		
+	$scope.scrollToTop = function() {
+		$ionicScrollDelegate.scrollTop();
+	}
+  
+ })
+ 
+ 
+ 
+ 
+.controller('EPGCtrl', function($scope, GetEPGService, $window, $state, mysocket, $ionicScrollDelegate, $ionicActionSheet, myTimeout) {
+	
+	
+	// $scope.channels = epg.channels;
+	$scope.changeChannels = function(channelId) {
+		mysocket.changeChannel(channelId);
+	}
+	$scope.showConnecting = myTimeout.showConnecting;
+	$scope.showDisconnecting = myTimeout.showDisconnecting;
+	
+    GetEPGService.getEPG().then(function(response) {
+        $scope.epgs = response.data;
+		var channel = [];
+		for(var i = 0; i < $scope.epgs.ChannelList.Series.length; i++) {
+			for(var j = 0; j < $scope.epgs.ChannelList.Series[i].Service.length; j++) {
+				var temp = {
+					channelId : $scope.epgs.ChannelList.Series[i].Service[j].ChannelID,
+					ChannelName : $scope.epgs.ChannelList.Series[i].Service[j].ChannelName.content
+				}
+			channel.push(temp);
+			
+			//console.log(channel);
+			}
+		}
+	})
+	
+	$scope.Connections = mysocket.Connections;
+	$scope.CurrentConnections = mysocket.CurrentConnections;
+	$scope.GetFavouriteArr = ($window.localStorage.getItem('FavouriteArr')!==null) ? JSON.parse($window.localStorage.getItem('FavouriteArr')) : [];
+	// $scope.GetConnectionsArr = ($window.localStorage.getItem('Connections')!==null) ? JSON.parse($window.localStorage.getItem('Connections')) : [];
+	$scope.GetObjectData = ($window.localStorage.getItem('ObjectData')!==null) ? JSON.parse($window.localStorage.getItem('ObjectData')) : [];
+	
+			
+	
+	// $scope.CheckMatch = function() {
+	// var i, t;
+		// for(i = 0 ; i < $scope.GetConnectionsArr.length ; i++) {
+			// for(t = 0 ; t < $scope.GetObjectData.length; t++) {
+	// angular.equals($scope.GetConnectionsArr[i], $scope.GetObjectData[t]);
+			// }
+		// }
+	// }
+	$scope.CheckConnected = function() {
+		if(connected = true) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	$scope.doRefresh = function() {
+		console.log('Refreshing!');
+			$scope.Connections = ($window.localStorage.getItem('Connections')!==null) ? JSON.parse($window.localStorage.getItem('Connections')) : [];
+		$scope.$broadcast('scroll.refreshComplete');
+	}
+		
+	$scope.checkLocalStorageToken = function() {
+		for(var i=0; i < $scope.Connections.length; i++) {
+			if($scope.Connections[i].alive) {
+				return true
 			}
 			else {
-			    return false;
-			
+				return false;
 			}
 		}
+	}
 		
-    
-	    $scope.scrollToTop = function() {
-			$ionicScrollDelegate.scrollTop();
+	$scope.TestArr = 	
+	{NumOfWord: 'One Word'},
+		
+	
+	
+
+	$scope.AddFavoriteMessage = ""
+	$scope.AddToFavourite = function() {
+		var Favourite = localStorage.getItem("FavouriteArr");
+		var FavouriteArr;
+		if(Favourite == null || Favourite == undefined){
+			FavouriteArr  = [];
 		}
+		else {
+			FavouriteArr = JSON.parse(Favourite);
+		}
+		FavouriteArr.push($scope.TestArr);
+		localStorage.setItem("FavouriteArr", JSON.stringify(FavouriteArr));
+		$scope.AddFavoriteMessage = "Successfully added to Favorite List"
+		console.log(FavouriteArr);
+		}
+	
+		
+	$scope.scrollToTop = function() {
+		$ionicScrollDelegate.scrollTop();
+	}
   
 
 	var connected;
-	$scope.showActionSheet = function() {
+	var TokenId;
+		$scope.$watch('connected', function() {
+		$scope.showActionSheet = function() {
+        // alert('hey, connected has changed!');
+		console.log(connected);
+    });
+	// $scope.$apply(function () {
+            // connected;
+        // });
+	
 		if(connected == true) {
-			if($scope.activeChannel) { 
+			//if($scope.activeChannel) { 
+				// var hideSheet = $ionicActionSheet.show({
+					// buttons:[
+						// { text:'Favourite'},
+						
+						// { text:'Record By Time' },
+						// { text:'Launch the RC'},
+						// { text:'Disconnect STB'}
+					// ],
+					
+		// destructiveText:'Power Off',
+		// cancelText: 'Cancel',
+		// cancel: function() {
+		// },
+		
+		// buttonClicked: function(index) {
+			// if(index == 0) {
+				// $state.go("EPG.Favourite");
+			// }
+			
+			// if(index == 1) {
+			// }
+			
+			// if(index == 3) {
+				// mysocket.disconnect($scope.Connections[TokenId].token);	
+				// connected = false;
+				// $scope.showDisconnecting();
+			
+			// }
+			
+			// return true;
+			// },
+			
+			// destructiveButtonClicked: function() {
+				// return true;
+			// }
+				// });
+			// }
+			
+			//else {
 				var hideSheet = $ionicActionSheet.show({
-					buttons: [
-							{ text:'Record By Time' },
-							{ text:'Launch the RC'},
-							{ text:'Disconnect STB'}
-				
+					buttons: [ 	
+						{text:'Favourites'},
+						{text:'Switch To This Channel' },
+						{text:'Record By Time'},
+						{text:'Launch the RC'},
+						{text:'Disconnect STB'}
 					],
-			destructiveText:'Power Off',
-			cancelText: 'Cancel',
-			cancel: function() {
-				
-			},
-			buttonClicked: function(index) {
-				if(index == 0) {
-				
-			}
-				if(index == 1) {
-				
-				}
-				if(index == 2) {
-					mysocket.disconnect();
-					console.log("Disconnected");
-					connected = false;
-				}
-			return true;
-			},
-			destructiveButtonClicked: function() {
-			return true;
-			}
-		});
-		}
-			else {
-				var hideSheet = $ionicActionSheet.show({
-					buttons: [
-								{text:'Switch To This Channel' },
-								{text:'Record By Time'},
-								{text:'Launch the RC'},
-								{text:'Disconnect STB'}
-				
-					],
-			destructiveText:'Power Off', 
-			cancelText: 'Cancel',
-			cancel: function() {
-				
-			},
-			buttonClicked: function(index) {
-				if(index == 0) {
-			
-				}
-				if(index == 1) {
 					
-				}
-				if(index == 2) {
-					
-				}
-				if(index == 3) {
-					mysocket.disconnect();
-					console.log("Disconnected");
-					connected = false;
-				}
+		destructiveText:'Power Off', 
+		cancelText: 'Cancel',
+		cancel: function() {
+		},
+		
+		buttonClicked: function(index, channelId) {
+			
+			if(index == 0) {
+				$state.go("EPG.Favourite");
+			}
+			
+			if(index == 1) {
+				console.log($scope.activeChannel);
+				$scope.changeChannels($scope.activeChannel.ChannelID);
+				
+			}
+			
+			if(index == 2) {	
+			}
+			
+			if(index == 4) {
+				mysocket.disconnect($scope.Connections[TokenId].token);
+				$scope.showDisconnecting();
+				connected = false;
+							
+			}
 			return true;
 			},
-			destructiveButtonClicked: function() {
 			
+		destructiveButtonClicked: function() {
 			return true;
-			}
-			});
-			}
+		}
+				});
+		//	}
 		}
 		
-		
-		else{
-			if($scope.GetTokenArr.length == 0) {
-				$scope.checkLocalStorageToken = function() {
-					return false;
-				}
-			}
+		else {
+			if($scope.checkLocalStorageToken == true){
+			return true;
+		}
+			
 		
 		
-		else if($scope.GetTokenArr.length == 1) {
-			 mysocket.connect($scope.GetTokenArr[0].token.toString());
-			 console.log("Connected");
-			 connected = true;
+		else if($scope.Connections.length == 1) {
+			
+			mysocket.connect($scope.Connections[0].token);
+			connected = true;
+			TokenId = 0;
+			$scope.showConnecting();
 		}
 		
-		else if($scope.GetTokenArr.length == 2 ) {
+		else if($scope.Connections.length == 2 ) {
+			// $scope.buttons = [];
+			// for(var i=0; i < $scope.Connections.length; i++) {
+			
+				// if($scope.Connections[i].alive) {
+					// $scope.buttons.push({ text: $scope.Connections[i].stb.toString() });
+				// }				
+			// }
+			
 			var hideSheet = $ionicActionSheet.show({
-				buttons: [
-					{ text: $scope.GetTokenArr[0].stb.toString() },
-					{ text: $scope.GetTokenArr[1].stb.toString() },
-				],
+			buttons:[
+					  { text: $scope.Connections[0].stb.toString() },
+					  { text: $scope.Connections[1].stb.toString()  }
+					  ],					
 			cancelText: 'Cancel',
 			cancel: function() {
-				
-			},
-			buttonClicked: function(index) {
-				if(index == 0) {
-					mysocket.connect($scope.GetTokenArr[0].token.toString() );
-					console.log("connected");
-					connected = true;
-					
-				}
-				if(index == 1) {
-					mysocket.connect($scope.GetTokenArr[1].token.toString() );
-					console.log("connected");
-					connected = true;
-				}
-			return true;
-			},
-		})	
-		}
-		
-		else if($scope.GetTokenArr.length == 3) {
-			var hideSheet = $ionicActionSheet.show({
-				buttons: [
-					{ text: $scope.GetTokenArr[0].stb.toString() },
-					{ text: $scope.GetTokenArr[1].stb.toString() },
-					{ text: $scope.GetTokenArr[2].stb.toString() }
-				],
-			cancelText: 'Cancel',
-			cancel: function() {
-				
-			},
-			buttonClicked: function(index) {
-				if(index == 0) {
-					mysocket.connect($scope.GetTokenArr[0].token.toString() );
-					console.log("connected");
-					connected = true;
-					
-				}
-				if(index == 1) {
-					mysocket.connect($scope.GetTokenArr[1].token.toString() );
-					console.log("connected");
-					connected = true;
-				}
-				if(index == 2) {
-					mysocket.connect($scope.GetTokenArr[2].token.toString() );
-					console.log("connected");
-					connected = true;
-				}
-			return true;
 			},
 			
-		})	
+			buttonClicked: function(index) {
+				if(index == 0) {
+					
+					mysocket.connect($scope.Connections[0].token);
+					connected = true;	
+					TokenId = 0;
+					$scope.showConnecting();
+					
+				}
+				
+				if(index == 1) {
+				
+					mysocket.connect($scope.Connections[1].token);
+					connected = true;
+					TokenId = 1;
+					$scope.showConnecting();
+					
+				}
+			return true;
+			},
+			})
+			
 		}
+		
+		else if($scope.Connections.length == 3) {
+			$scope.buttons = [];
+			console.log($scope.Connections);
+			for(var i=0; i < $scope.Connections.length; i++) {
+			
+				if($scope.Connections[i].alive) {
+					$scope.buttons.push({ text: $scope.Connections[i].stb.toString() });
+				}				
+			}
+			var hideSheet = $ionicActionSheet.show({
+			buttons:$scope.buttons,	
+			cancelText: 'Cancel',
+			cancel: function() {
+			},
+			
+			buttonClicked: function(index) {
+				if(index == 0) {
+					mysocket.connect($scope.Connections[0].token);
+					connected = true;
+					TokenId = 0;
+					$scope.showConnecting();
+					
+				}
+				
+				if(index == 1) {
+					mysocket.connect($scope.Connections[1].token);
+					TokenId = 1;
+					$scope.showConnecting();					
+					connected = true;
+				}
+				
+				if(index == 2) {
+					mysocket.connect($scope.Connections[2].token);
+					connected = true;
+					TokenId = 2;
+					$scope.showConnecting();
+					
+				}
+				
+			return true;
+			
+			},
+			})	
+		}
+		
 		else{
 			$state.go('Settings.Socket');
 		}
 		}
+	
 	}
 	})
 
 	 
 	 
 	 
-.controller('VODCtrl', function($scope, $rootScope,  GetVodService, $window, $state, mysocket, $ionicScrollDelegate, $ionicActionSheet, $ionicSlideBoxDelegate, $ionicHistory, $stateParams ) {
+.controller('VODCtrl', function($scope, $rootScope,  GetVodService, $window, $state, mysocket, $ionicScrollDelegate, $ionicActionSheet, $ionicSlideBoxDelegate, $ionicHistory, $stateParams, myTimeout ) {
+	
+	$scope.Connections = mysocket.Connections;
+	$scope.showConnecting = myTimeout.showConnecting;
+	$scope.showDisconnecting = myTimeout.showDisconnecting;
 	
     GetVodService.getVODs().then(function(response) {
 	    $scope.vods = response.data;
@@ -247,146 +397,146 @@ angular.module('starter.controllers', [])
 	})
 	
 	
-		$scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
-		$scope.checkLocalStorageToken = function() {
-		    if($scope.GetTokenArr.length > 0 ) {
-			    return true
+	
+	$scope.checkLocalStorageToken = function() {
+		for(var i=0; i < $scope.Connections.length; i++) {
+			if($scope.Connections[i].alive) {
+				return true
 			}
 			else {
 				return false;
 			}
 		}
+	}
 		
 		
-		
-		$scope.previousPage = function() {
-			$ionicHistory.goBack();
-		};
+	$scope.previousPage = function() {
+		$ionicHistory.goBack();
+	};
 	
 	
-		$scope.activate_Letter = function(letter, index) {
+	$scope.activate_Letter = function(letter, index) {
 		$rootScope.activeLetter = letter;
-		console.log($rootScope.activeLetter);
 		
+	}
+		
+	$scope.active_Artist = function (Artist, index) {
+		$rootScope.activeArtist = Artist;
+	}
+	
+	$scope.active_Word = function (NumberOfWords, index) {
+		$rootScope.activeWord = NumberOfWords;
+	}
+		
+	$scope.GoToVODArtistPage = function() {
+	
+		if($scope.activeLetter.T == 'A'){
+			$state.go("VOD.VODsArtistList",{ letter : 1});
 		}
-		
-		$scope.active_Artist = function (Artist, index) {
-			$rootScope.activeArtist = Artist;
+			
+		else if($scope.activeLetter.T == 'B'){
+			$state.go("VOD.VODsArtistList",{ letter: 2});
+		}
+			
+		else if($scope.activeLetter.T == 'C'){
+			$state.go("VOD.VODsArtistList",{ letter: 3});
+		}
+			
+		else if($scope.activeLetter.T == 'D'){
+			$state.go("VOD.VODsArtistList",{ letter: 4});
+		}
+			
+		else if($scope.activeLetter.T == 'E'){
+			$state.go("VOD.VODsArtistList", {letter : 5});
+		}	
+			
+		else if($scope.activeLetter.T == 'F'){
+			$state.go("VOD.VODsArtistList",{ letter: 6});
+		}
+	 
+		else if($scope.activeLetter.T == 'G'){
+			$state.go("VOD.VODsArtistList",{ letter: 7});
+		}
+	 
+		else if($scope.activeLetter.T == 'H'){
+			$state.go("VOD.VODsArtistList",{ letter: 8});
+		}
+	 
+		else if($scope.activeLetter.T == 'I'){
+			$state.go("VOD.VODsArtistList", {letter : 9});
+		}
+	 
+		else if($scope.activeLetter.T == 'J'){
+			$state.go("VOD.VODsArtistList",{ letter: 10});
+		}
+	 
+		else if($scope.activeLetter.T == 'K'){
+			$state.go("VOD.VODsArtistList",{ letter: 11});
+		}
+	 
+		else if($scope.activeLetter.T == 'L'){
+			$state.go("VOD.VODsArtistList",{ letter: 12});
+		}
+	 
+		else if($scope.activeLetter.T == 'M'){
+			$state.go("VOD.VODsArtistList", {letter : 13});
+		}
+	 
+		else if($scope.activeLetter.T == 'N'){
+			$state.go("VOD.VODsArtistList",{ letter: 14});
+		}
+	 
+		else if($scope.activeLetter.T == 'O'){
+			$state.go("VOD.VODsArtistList",{ letter: 15});
+		}
+	 
+		else if($scope.activeLetter.T == 'P'){
+			$state.go("VOD.VODsArtistList",{ letter: 16});
+		}
+
+		else if($scope.activeLetter.T == 'Q'){
+			$state.go("VOD.VODsArtistList", {letter : 17});
+		}
+	 
+		else if($scope.activeLetter.T == 'R'){
+			$state.go("VOD.VODsArtistList",{ letter: 18});
+		}
+	 
+		else if($scope.activeLetter.T == 'S'){
+			$state.go("VOD.VODsArtistList",{ letter: 19});
+		}
+	 
+		else if($scope.activeLetter.T == 'T'){
+			$state.go("VOD.VODsArtistList",{ letter: 20});
+		}
+	 
+		else if($scope.activeLetter.T == 'U'){
+			$state.go("VOD.VODsArtistList", {letter : 21});
 		}
 	
-		$scope.active_Word = function (NumberOfWords, index) {
-			$rootScope.activeWord = NumberOfWords;
+		else if($scope.activeLetter.T == 'V'){
+			$state.go("VOD.VODsArtistList",{ letter: 22});
+		}
+	 
+		else if($scope.activeLetter.T == 'W'){
+			$state.go("VOD.VODsArtistList",{ letter: 23});
 		}
 		
-		$scope.GoToVODArtistPage = function() {
+		else if($scope.activeLetter.T == 'X'){
+			$state.go("VOD.VODsArtistList",{ letter: 24});
+		}
+	 
+		else if($scope.activeLetter.T == 'Y'){
+			$state.go("VOD.VODsArtistList", {letter : 25});
+		}
+	 
+		else if($scope.activeLetter.T == 'Z'){
+			$state.go("VOD.VODsArtistList", {letter : 26});
+		}
 	
-			if($scope.activeLetter.T == 'A'){
-				$state.go("VOD.VODsArtistList",{ letter : 1});
-			}
-			
-			else if($scope.activeLetter.T == 'B'){
-				$state.go("VOD.VODsArtistList",{ letter: 2});
-			}
-			
-			else if($scope.activeLetter.T == 'C'){
-				$state.go("VOD.VODsArtistList",{ letter: 3});
-			}
-			
-			else if($scope.activeLetter.T == 'D'){
-				$state.go("VOD.VODsArtistList",{ letter: 4});
-			}
-			
-			else if($scope.activeLetter.T == 'E'){
-				$state.go("VOD.VODsArtistList", {letter : 5});
-			}	
-			
-			else if($scope.activeLetter.T == 'F'){
-				$state.go("VOD.VODsArtistList",{ letter: 6});
-			}
-	 
-			else if($scope.activeLetter.T == 'G'){
-				$state.go("VOD.VODsArtistList",{ letter: 7});
-			}
-	 
-			else if($scope.activeLetter.T == 'H'){
-				$state.go("VOD.VODsArtistList",{ letter: 8});
-			}
-	 
-			else if($scope.activeLetter.T == 'I'){
-				$state.go("VOD.VODsArtistList", {letter : 9});
-			}
-	 
-			else if($scope.activeLetter.T == 'J'){
-				$state.go("VOD.VODsArtistList",{ letter: 10});
-			}
-	 
-			else if($scope.activeLetter.T == 'K'){
-				$state.go("VOD.VODsArtistList",{ letter: 11});
-			}
-	 
-			else if($scope.activeLetter.T == 'L'){
-				$state.go("VOD.VODsArtistList",{ letter: 12});
-			}
-	 
-			else if($scope.activeLetter.T == 'M'){
-				$state.go("VOD.VODsArtistList", {letter : 13});
-			}
-	 
-			else if($scope.activeLetter.T == 'N'){
-				$state.go("VOD.VODsArtistList",{ letter: 14});
-			}
-	 
-			else if($scope.activeLetter.T == 'O'){
-				$state.go("VOD.VODsArtistList",{ letter: 15});
-			}
-	 
-			else if($scope.activeLetter.T == 'P'){
-				$state.go("VOD.VODsArtistList",{ letter: 16});
-			}
-	 
-			else if($scope.activeLetter.T == 'Q'){
-				$state.go("VOD.VODsArtistList", {letter : 17});
-			}
-	 
-			else if($scope.activeLetter.T == 'R'){
-				$state.go("VOD.VODsArtistList",{ letter: 18});
-			}
-	 
-			else if($scope.activeLetter.T == 'S'){
-				$state.go("VOD.VODsArtistList",{ letter: 19});
-			}
-	 
-			else if($scope.activeLetter.T == 'T'){
-				$state.go("VOD.VODsArtistList",{ letter: 20});
-			}
-	 
-			else if($scope.activeLetter.T == 'U'){
-				$state.go("VOD.VODsArtistList", {letter : 21});
-			}
-	 
-			else if($scope.activeLetter.T == 'V'){
-				$state.go("VOD.VODsArtistList",{ letter: 22});
-			}
-	 
-			else if($scope.activeLetter.T == 'W'){
-				$state.go("VOD.VODsArtistList",{ letter: 23});
-			}
-		
-			else if($scope.activeLetter.T == 'X'){
-				$state.go("VOD.VODsArtistList",{ letter: 24});
-			}
-	 
-			else if($scope.activeLetter.T == 'Y'){
-				$state.go("VOD.VODsArtistList", {letter : 25});
-			}
-	 
-			else if($scope.activeLetter.T == 'Z'){
-				$state.go("VOD.VODsArtistList", {letter : 26});
-			}
-	
-			else{
-				$state.go("VOD.VODsArtistList", { letter: 0});
-			}
+		else{
+			$state.go("VOD.VODsArtistList", { letter: 0});
+		}
 	}
   
 	
@@ -394,7 +544,7 @@ angular.module('starter.controllers', [])
 	
 	$scope.doRefresh = function() {
 		console.log('Refreshing!');
-		$scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
+		$scope.Connections = ($window.localStorage.getItem('Connections')!==null) ? JSON.parse($window.localStorage.getItem('Connections')) : [];
 		$scope.$broadcast('scroll.refreshComplete');
     }
 	
@@ -403,196 +553,259 @@ angular.module('starter.controllers', [])
 	}	
   
    var connected;
+   var TokenId;
    $scope.showActionSheet = function() {
 		if(connected == true) {
-			if($scope.activeVOD) { 
-				var hideSheet = $ionicActionSheet.show({
-					buttons: [
-							{ text:'Record By Time' },
-							{ text:'Launch the RC'},
-							{ text:'Disconnect STB'}
-				
-					],
-			destructiveText:'Power Off',
-			cancelText: 'Cancel',
-			cancel: function() {
-				
-			},
-			buttonClicked: function(index) {
-				if(index == 0) {
-				
-			}
-				if(index == 1) {
-				
-				}
-				if(index == 2) {
-					mysocket.disconnect();
-					console.log("Disconnected");
-					connected = false;
-				}
-			return true;
-			},
-			destructiveButtonClicked: function() {
-			return true;
-			}
-		});
-		}
-			else {
-				var hideSheet = $ionicActionSheet.show({
-					buttons: [
-								{text:'Switch To This Channel' },
-								{text:'Record By Time'},
-								{text:'Launch the RC'},
-								{text:'Disconnect STB'}
-				
-					],
-			destructiveText:'Power Off', 
-			cancelText: 'Cancel',
-			cancel: function() {
-				
-			},
-			buttonClicked: function(index) {
-				if(index == 0) {
-				
-				}
-				if(index == 1) {
+			// if($scope.activeVOD) { 
+				// var hideSheet = $ionicActionSheet.show({
+					// buttons: [
+						// { text:'Record By Time' },
+						// { text:'Launch the RC'},
+						// { text:'Disconnect STB'}
+					// ],
 					
-				}
-				if(index == 2) {
+		// destructiveText:'Power Off',
+		// cancelText: 'Cancel',
+		// cancel: function() {
+		// },
+		
+		// buttonClicked: function(index) {
+			// if(index == 0) {
+			// }
+			
+			// if(index == 1) {
+			// }
+			
+			// if(index == 2) {
+				// mysocket.disconnect($scope.Connections[TokenId].token);
+				// $scope.showDisconnecting();
+				// connected = false;
+			// }
+			
+			// return true;
+			// },
+			
+		// destructiveButtonClicked: function() {
+			// return true;
+		// }
+	// });
+			// }
+		// else {
+			var hideSheet = $ionicActionSheet.show({
+				buttons: [
 					
-				}
-				if(index == 3) {
-					mysocket.disconnect();
-					console.log("Disconnected");
-					connected = false;
-				}
-			return true;
-			},
-			destructiveButtonClicked: function() {
+					{text:'Record By Time'},
+					{text:'Launch the RC'},
+					{text:'Disconnect STB'}
+				],
+				
+		destructiveText:'Power Off', 	
+		cancelText: 'Cancel',
+		cancel: function() {
+		},
+		
+		buttonClicked: function(index, objectArr) {
+			if(index == 0) {
+			}
+			
+			if(index == 1) {
+			}
+			
+			if(index == 2) {	
+			}
+			
+			if(index == 3) {
+				mysocket.disconnect($scope.Connections[TokenId].token);
+				$scope.showDisconnecting();
+				connected = false;
+			}
 			
 			return true;
-			}
+			},
+			
+		destructiveButtonClicked: function() {
+			return true;
+		}
 			});
-			}
+		//}
+		}
+		
+		else{
+			if($scope.checkLocalStorageToken == true){
+			return true;
 		}
 		
 		
-		else{
-			if($scope.GetTokenArr.length == 0) {
-				$scope.checkLocalStorageToken = function() {
-					return false;
-				}
-			}
-		
-		
-		else if($scope.GetTokenArr.length == 1) {
-			 mysocket.connect($scope.GetTokenArr[0].token.toString());
-			 console.log("Connected");
+		else if($scope.Connections.length == 1) {
+			 mysocket.connect($scope.Connections[0].token);
+			 TokenId = 0;
+			 $scope.showConnecting();
 			 connected = true;
 		}
 		
-		else if($scope.GetTokenArr.length == 2 ) {
+		else if($scope.Connections.length == 2 ) {
+			$scope.buttons = [];
+			for(var i=0; i < $scope.Connections.length; i++) {
+			
+				if($scope.Connections[i].alive) {
+					$scope.buttons.push({ text: $scope.Connections[i].stb.toString() });
+				}				
+			}
 			var hideSheet = $ionicActionSheet.show({
-				buttons: [
-					{ text: $scope.GetTokenArr[0].stb.toString() },
-					{ text: $scope.GetTokenArr[1].stb.toString() },
-				],
+			buttons:$scope.buttons,
 			cancelText: 'Cancel',
 			cancel: function() {
-				
 			},
+			                             
 			buttonClicked: function(index) {
 				if(index == 0) {
-					mysocket.connect($scope.GetTokenArr[0].token.toString() );
-					console.log("connected");
+					mysocket.connect($scope.Connections[0].token);
+					TokenId = 0;
+					$scope.showConnecting();
 					connected = true;
-					
 				}
 				if(index == 1) {
-					mysocket.connect($scope.GetTokenArr[1].token.toString() );
-					console.log("connected");
+					mysocket.connect($scope.Connections[1].token);
+					TokenId = 1;
+					$scope.showConnecting();
 					connected = true;
 				}
-			return true;
+				return true;
 			},
-		})	
+			})	
 		}
 		
-		else if($scope.GetTokenArr.length == 3) {
+		else if($scope.Connections.length == 3) {
+			$scope.buttons = [];
+			console.log($scope.Connections);
+			for(var i=0; i < $scope.Connections.length; i++) {
+			
+				if($scope.Connections[i].alive) {
+					$scope.buttons.push({ text: $scope.Connections[i].stb.toString() });
+				}				
+			}
 			var hideSheet = $ionicActionSheet.show({
-				buttons: [
-					{ text: $scope.GetTokenArr[0].stb.toString() },
-					{ text: $scope.GetTokenArr[1].stb.toString() },
-					{ text: $scope.GetTokenArr[2].stb.toString() }
-				],
+			buttons: $scope.buttons,
 			cancelText: 'Cancel',
 			cancel: function() {
-				
-			},
-			buttonClicked: function(index) {
-				if(index == 0) {
-					mysocket.connect($scope.GetTokenArr[0].token.toString() );
-					console.log("connected");
-					connected = true;
-					
-				}
-				if(index == 1) {
-					mysocket.connect($scope.GetTokenArr[1].token.toString() );
-					console.log("connected");
-					connected = true;
-				}
-				if(index == 2) {
-					mysocket.connect($scope.GetTokenArr[2].token.toString() );
-					console.log("connected");
-					connected = true;
-				}
-			return true;
 			},
 			
-		})	
+			buttonClicked: function(index) {
+				if(index == 0) {
+					mysocket.connect($scope.Connections[0].token);
+					TokenId = 0;
+					$scope.showConnecting();
+					connected = true;
+				}
+				
+				if(index == 1) {
+					mysocket.connect($scope.Connections[1].token);
+					TokenId = 1;
+					$scope.showConnecting();
+					connected = true;
+				}
+				
+				if(index == 2) {
+					mysocket.connect($scope.Connections[2].token);
+					TokenId = 2;
+					$scope.showConnecting();
+					connected = true;
+				}
+				
+			return true;
+			},
+			})	
 		}
-		else{
+		else {
 			$state.go('Settings.Socket');
 		}
 		}
 	}
-	})
+})
 
-.controller('SocketCtrl',function($scope, $window, mysocket, $timeout, $ionicActionSheet, $ionicScrollDelegate) {
+.controller('SocketCtrl',function($scope, $window, mysocket, myTimeout, $ionicActionSheet, $ionicScrollDelegate) {
 
-  $scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
+
+	$scope.Connections = mysocket.Connections;
+	$scope.CurrentConnections = mysocket.CurrentConnections;
+	
+	mysocket.ObjectData = JSON.parse($window.localStorage.getItem('ObjectData'))
+	$scope.ObjectData = mysocket.ObjectData;
+	// console.log($scope.ObjectData);
+	// console.log($scope.GetConnectionsArr[1].stb_id);
+	// console.log($scope.ObjectData[0].cid);
+
 	
 	
-  
+	 $scope.CheckAlive = function() {
+			for(var i=0; i < $scope.Connections.length; i++) {
+				if($scope.Connections[i].alive) {
+					return true
+				}		
+				else {
+					return false;
+				}
+			}
+	 }
 
-  $scope.doRefresh = function() {
-    console.log('Refreshing!');
-    $scope.GetTokenArr = ($window.localStorage.getItem('TokenArr')!==null) ? JSON.parse($window.localStorage.getItem('TokenArr')) : [];
-    $scope.$broadcast('scroll.refreshComplete');
-    }
+	
+	$scope.showConnecting = myTimeout.showConnecting;
+	$scope.showDisconnecting = myTimeout.showDisconnecting;
+	
+	$scope.doRefresh = function() {
+		console.log('Refreshing!');
+		$scope.Connections = ($window.localStorage.getItem('Connections')!==null) ? JSON.parse($window.localStorage.getItem('Connections')) : [];
+		$scope.$broadcast('scroll.refreshComplete');
+	}
       
-	$scope.OpenSocket = function(token) {
-		if($scope.GetTokenArr.length == 1) {
-		    mysocket.connect($scope.GetTokenArr[1].token.toString() );
-			console.log('Connected');
-	}
-		else{
-			mysocket.connect($scope.GetTokenArr[1].token.toString() );
-			console.log('Connected');
-		
+	// $scope.OpenSocket = function(token) {
+		// if($scope.GetTokenArr.length == 1) {
+			// mysocket.connect($scope.GetTokenArr[0].token.toString() );
+			// console.log('Connected');
+		// }
+		// else {
+			// mysocket.connect($scope.GetTokenArr[0].token.toString() );
+			// console.log('Connected');
+		// }
+	// }
+	
+	
+	$scope.OpenSocket = function(index) { 
+	var connected;
+		if(index == mysocket.CurrentConnections.index) { 
+			mysocket.disconnect(index);
+			// console.log(connected);
+				$scope.$watch('connected', function() {
+				connected = false;
+			console.log(connected);
+			
+			$scope.showDisconnecting();
+				})
 		}
+		else {
+			mysocket.connect(index);
+			
+			$scope.showConnecting();	
+			$scope.$watch('connected', function() {
+				connected = true;
+			console.log(connected);
+		})
+	
+    };
 	}
+	
+
 	
 	
 	$scope.moveItem = function(ObjectArr, fromIndex, toIndex) {
-		$scope.GetTokenArr.splice(fromIndex, 1);
-		$scope.GetTokenArr.splice(toIndex, 0, ObjectArr );
-  }
+		$scope.Connections.splice(fromIndex, 1);
+		$scope.Connections.splice(toIndex, 0, ObjectArr );
+	}
 	
 	$scope.Delete = function($index) {
-		$scope.GetTokenArr.splice($index, 1);    
-		localStorage.removeItem($scope.GetTokenArr);
-		localStorage.setItem("TokenArr", JSON.stringify($scope.GetTokenArr));
+		$scope.Connections.splice($index, 1);    
+		localStorage.removeItem($scope.Connections);
+		localStorage.setItem("Connections", JSON.stringify($scope.Connections));
 		console.log("Deleted");
 }
 	
@@ -604,27 +817,30 @@ angular.module('starter.controllers', [])
 				{ text:'Move' },
 				
 			],
+			
 			destructiveText: 'Delete',
 			cancelText: 'Cancel',
 			cancel: function() {
 				$scope.ShowDeleteButton = false;
 				$scope.ShowReOrderButton = false;
 			},
+			
 			buttonClicked: function(index) {
 				if(index == 0) {
 				$scope.ToggleReOrder();
-				}	
+			}	
+			
 			return true;
 			},
+			
 			destructiveButtonClicked: function() {
-				$scope.ToggleDelete();
-					
-			return true;
+				$scope.ToggleDelete();	
+				return true;
 			}
 		});
 	};
 
-		$scope.ShowReOrderButton = false;
+	$scope.ShowReOrderButton = false;
 	$scope.ToggleReOrder = function() {
 		$scope.ShowReOrderButton = !$scope.ShowReOrderButton;
 		if($scope.ShowReOrderButton == true) {
@@ -632,7 +848,7 @@ angular.module('starter.controllers', [])
 		}
 	}
 
-		$scope.ShowDeleteButton = false;
+	$scope.ShowDeleteButton = false;
 	$scope.ToggleDelete = function() {
 		$scope.ShowDeleteButton  = !$scope.ShowDeleteButton;
 		if($scope.ShowDeleteButton == true) {
@@ -640,30 +856,35 @@ angular.module('starter.controllers', [])
 		}
 	}
 	
-    $scope.checkLocalStorageToken = function() {
-		if($scope.GetTokenArr.length > 0 ) {
-			return true
-		}
-		else{
-			return false;	
+   $scope.checkLocalStorageToken = function() {
+		for(var i=0; i < $scope.Connections.length; i++) {
+			if($scope.Connections[i].alive) {
+				return true
+			}
+			else {
+				return false;
+			}
 		}
 	}
 	
-	$scope.CloseSocket = function() {
-		mysocket.disconnect();
-		console.log("Disconnected");
-	}	
+	// $scope.CloseSocket = function() {
+		// mysocket.disconnect();
 		
-    var CheckSocket = true;
-	$scope.ToggleSocket = function() {
-		if(CheckSocket) {
-			$scope.OpenSocket();
-		}
-		else {
-			$scope.CloseSocket();
-		}
-		CheckSocket = !CheckSocket;
-	}
+	// }	
+		
+    // var CheckSocket = true;
+	// $scope.SuccessMessage = "";
+	// $scope.ToggleSocket = function() {
+		// if(CheckSocket) {
+			// $scope.OpenSocket();
+			// $scope.SuccessMessage = "Connected";
+		// }
+		// else {
+			// $scope.CloseSocket();
+			// $scope.SuccessMessage = "Disconnected";
+		// }
+		// CheckSocket = !CheckSocket;
+	// }
 
 	$scope.scrollToTop = function() {
     $ionicScrollDelegate.scrollTop();
@@ -671,68 +892,103 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('PushCommandCtrl', function($scope){
-	$scope.Push = function() {			
-		var url;
-		// url = '/Pairing';
-		$http({
-			method  : 'POST',
-			url     : url,
-			// data    : 
-			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
-		}).then(function(response) {
-			if(response.data) { 
-			console.log("response.data");
+// .controller('PushCommandCtrl', function($scope){
+	// $scope.Push = function() {			
+		// var url;
+		//url = '/Pairing';
+		// $http({
+			// method  : 'POST',
+			// url     : url,
+			//data    : 
+			// headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+		// }).then(function(response) {
+			// if(response.data) { 
+			// console.log("response.data");
 			
-			}
-		},
-		function(response) { 
+			// }
+		// },
+		// function(response) { 
 		    
 			
-		});
-	}
-})
+		// });
+	// }
+// })
 
-.controller('PullCommandCtrl', function($scope) {
-	$scope.Pull = function() {	
-		var url;
+// .controller('PullCommandCtrl', function($scope) {
+	// $scope.Pull = function() {	
+		// var url;
 		// url = '/Pairing';
-		$http({
-			method  : 'POST',
-			url     : url,
+		// $http({
+			// method  : 'POST',
+			// url     : url,
 			// data    : 
-			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
-		}).then(function(response) {
-			if(response.data) { 
+			// headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+		// }).then(function(response) {
+			// if(response.data) { 
 			
 			
-			}
-		},
-		function(response) { 
+			// }
+		// },
+		// function(response) { 
 			
-		});
-	}
-})
-.controller('RatingsArrCtrl', function($scope) {
-	$scope.ratingArr = [
-	    {value: 1,icon: 'ion-ios-star-outline'},
-		{value: 2,icon: 'ion-ios-star-outline'}, 
-		{value: 3,icon: 'ion-ios-star-outline'},
-		{value: 4,icon: 'ion-ios-star-outline'},
-		{value: 5,icon: 'ion-ios-star-outline'}
-	];
-	
-	$scope.setRating = function(val) {
-    var rtgs = $scope.ratingArr;
-    for (var i = 0; i < rtgs.length; i++) {
-		if (i < val) {
-			rtgs[i].icon = 'ion-ios-star';
-		}
-		else {
-			rtgs[i].icon = 'ion-ios-star-outline';
-		}
-	};
-	}
+		// });
+	// }
+// })
+
+
+
+.controller('RatingsController', ['$scope', function ($scope) {
+ 
+    $scope.starRating = 0;
+    $scope.click = function (param) {
+        console.log('Click');
+    };
+}])
+
+.directive('starRating', function () {
+    return {
+        scope: {
+            rating: '=',
+            maxRating: '@',
+            click: "&",
+           
+        },
+        restrict: 'EA',
+        template:
+            "<div style='display: inline-block; margin: 0px; padding: 0px; cursor:pointer;' ng-repeat='idx in maxRatings track by $index'> \
+                    <img ng-src='{{((hoverValue + _rating) <= $index) && \"http://www.codeproject.com/script/ratings/images/star-empty-lg.png\" || \"http://www.codeproject.com/script/ratings/images/star-fill-lg.png\"}}' \
+                    ng-Click='isolatedClick($index + 1)' \
+                    ng-mouseenter='isolatedMouseHover($index + 1)' \
+                    ng-mouseleave='isolatedMouseLeave($index + 1)'></img> \
+            </div>",
+        compile: function (element, attrs) {
+            if (!attrs.maxRating || (Number(attrs.maxRating) <= 0)) {
+                attrs.maxRating = '5';
+            };
+        },
+		
+		
+        controller: function ($scope, $element, $attrs) {
+            $scope.maxRatings = [];
+				
+            for (var i = 1; i <= $scope.maxRating; i++) {
+                $scope.maxRatings.push({});
+            };
+
+            $scope._rating = $scope.rating;
+			
+			$scope.isolatedClick = function (param) {
+				if ($scope.readOnly == 'true') return;
+
+				$scope.rating = $scope._rating = param;
+				
+				$scope.click({
+					param: param
+				});
+			};
+
+        }
+    };
 })
 
 .controller('LoginCtrl',function($scope,LoginService,$ionicPopup, $state) {
@@ -750,16 +1006,7 @@ angular.module('starter.controllers', [])
 	}
 })
 
-.controller('LoadingCtrl',function($scope,$ionicLoading,$timeout){
-	$scope.showLoading = function() {
-		$ionicLoading.show({
-			template: 'Loading...'
-		});
-	$timeout(function () {
-		$ionicLoading.hide();
-		}, 1000);
-	} 
-})
+
 
 
 .controller('SelectCtrl',function($scope,$ionicSideMenuDelegate){

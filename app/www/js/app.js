@@ -43,6 +43,7 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 	
 .config(['$ionicConfigProvider', function($ionicConfigProvider) {
     $ionicConfigProvider.tabs.position('bottom'); // other values: top
+	$ionicConfigProvider.scrolling.jsScrolling(false);
 }])
 
 
@@ -93,8 +94,18 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 		controller:'LoginCtrl'
 	})
 	
- 
-  .state('EPG.EPGList', {
+	.state('EPG.Favourite',{
+			url:'/Favourite',
+				views: { 
+					'menuContent':{
+						templateUrl: 'templates/Favourite.html',
+						controller:'FavouriteCtrl'
+					}
+				}
+	})
+	
+	
+	.state('EPG.EPGList', {
 		url: '/EPGList',
 			views: {
 			    'menuContent': {
@@ -163,20 +174,23 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 					$scope.testArr = $scope.activeWord;
 					
 					
+			
 					$scope.testArr = [	
-						{ title: 'dsvcds'},
-						{ title: 'L'},
-						{ title: 'Li'}, 
-						{ title: 'Lis'},
-						{ title: 'List'},
-						{ title: 'ListO'},
-						{ title: 'ListOf'},
-						{ title: 'ListOfS'}, 
-						{ title: 'ListOfSo'},
-						{ title: 'ListOfSon'},
-						{ title: 'ListOfSong'},	
-					]
-					
+						{ title: 'Otherside' },
+						{ title: 'Perfect Strangers'},
+						{ title: 'Take on Me'}, 
+						{ title: 'When We Were Young'},
+						{ title: 'Why do You Only Call Me When You are High?'},
+						{ title: 'The Less I Know the Better'},
+						{ title: 'I Took A Pill In Ibiza'},
+						{ title: 'Rolling in the Deep'}, 
+						{ title: 'Take Me Out'},
+						{ title: 'Fluorescent Adolescent'},
+						{ title: 'The Numbers'},					
+						]
+				
+				
+				
 				}
 			}			
 		}
@@ -200,6 +214,6 @@ var app = angular.module('starter', ['ionic', 'starter.controllers','starter.fac
 				}
 			}
 		});
-
+	
 });
 
