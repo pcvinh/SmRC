@@ -5,7 +5,7 @@
         </button>
 		</ion-nav-buttons>
 		<ion-nav-buttons side ="right">
-		 <button class="button button-icon button-clear ion-link" ng-click = "showActionSheet()" ng-show = "checkLocalStorageToken()">
+		 <button class="button button-icon button-clear ion-link" ng-click = "showActionSheet()" ng-show = "!checkLocalStorageToken()">
         </button>
      </ion-nav-buttons>
 	 </ion-nav-bar>
@@ -19,8 +19,8 @@
 	  
 	<ion-list show-delete="ShowDeleteButton" show-reorder = "ShowReOrderButton" > 
 
-	<!-- <div ng-repeat = "ObjectDataArr in ObjectData"> -->
-  <ion-item ng-repeat="ObjectArr in Connections track by $index"  ng-if ="ObjectArr.stb_id == ObjectDataArr.cid" ng-show = "CheckAlive()">
+	<div ng-repeat = "ObjectDataArr in ObjectData">
+  <ion-item ng-repeat="ObjectArr in Connections track by $index"  ng-if ="ObjectArr.stb_id == ObjectDataArr.cid" >
     <h2>{{ObjectArr.stb}}</h2>
 	<div class="item-checkbox">
 	 <label class="checkbox">
@@ -32,7 +32,7 @@
                         on-reorder="moveItem(ObjectArr, $fromIndex, $toIndex)">
     </ion-reorder-button>
   </ion-item>
- <!--  </div> -->
+  </div>
 </ion-list>
 
 

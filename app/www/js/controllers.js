@@ -148,7 +148,7 @@ angular.module('starter.controllers', [])
 	}
 		
 	$scope.TestArr = 	
-	{NumOfWord: 'One Word'},
+	{NumOfWord: 'Breaking Bad'},
 		
 	
 	
@@ -177,11 +177,11 @@ angular.module('starter.controllers', [])
 
 	var connected;
 	var TokenId;
-		$scope.$watch('connected', function() {
+		//$scope.$watch('connected', function() {
 		
         // alert('hey, connected has changed!');
-		console.log(connected);
-    });
+		//console.log(connected);
+    //});
 	// $scope.$apply(function () {
             // connected;
         // });
@@ -288,19 +288,16 @@ angular.module('starter.controllers', [])
 		}
 		
 		else if($scope.Connections.length == 2 ) {
-			// $scope.buttons = [];
-			// for(var i=0; i < $scope.Connections.length; i++) {
+			$scope.buttons = [];
+			for(var i=0; i < $scope.Connections.length; i++) {
 			
-				// if($scope.Connections[i].alive) {
-					// $scope.buttons.push({ text: $scope.Connections[i].stb.toString() });
-				// }				
-			// }
+				if($scope.Connections[i].alive) {
+					$scope.buttons.push({ text: $scope.Connections[i].stb.toString() });
+				}				
+			}
 			
 			var hideSheet = $ionicActionSheet.show({
-			buttons:[
-					  { text: $scope.Connections[0].stb.toString() },
-					  { text: $scope.Connections[1].stb.toString()  }
-					  ],					
+			buttons:$scope.buttons,				
 			cancelText: 'Cancel',
 			cancel: function() {
 			},
@@ -775,21 +772,21 @@ angular.module('starter.controllers', [])
 		if(index == mysocket.CurrentConnections.index) { 
 			mysocket.disconnect(index);
 			// console.log(connected);
-				$scope.$watch('connected', function() {
+				//$scope.$watch('connected', function() {
 				connected = false;
 			console.log(connected);
 			
 			$scope.showDisconnecting();
-				})
+				//})
 		}
 		else {
 			mysocket.connect(index);
 			
 			$scope.showConnecting();	
-			$scope.$watch('connected', function() {
+			//$scope.$watch('connected', function() {
 				connected = true;
 			console.log(connected);
-		})
+		//})
 	
     };
 	}
