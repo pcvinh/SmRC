@@ -1,0 +1,38 @@
+<ion-view title = "Favourites" ng-click="scrollToTop()"> 
+	<ion-nav-bar class="bar-balanced">
+	<ion-nav-buttons side="left">
+		</ion-nav-buttons>
+	<ion-nav-back-button class="button-clear"
+		ng-click="previousPage()">
+		<i class="ion-arrow-left-c"></i> Back
+	</ion-nav-back-button>
+       
+	<ion-nav-buttons side ="right">
+		<button class="button button-icon button-clear ion-link" ng-click = "showActionSheet()" ng-show = "checkLocalStorageToken()">
+        </button>
+     </ion-nav-buttons>
+	</ion-nav-bar>
+  <ion-content class="has-footer">
+   <ion-refresher pulling-text="Pull to refresh"
+	refreshing-icon="ion-loop"
+    pulling-icon="ion-arrow-down-c"
+	refreshing-text="Loading..."
+	on-refresh="doRefresh()">
+      </ion-refresher>
+
+	  <ion-list show-delete="ShowDeleteButton">
+	
+      <ion-item ng-repeat= "Favourites in GetFavouriteArr track by $index">
+	 
+		<h2>{{Favourites.NumOfWord}}</h2>
+	
+		<br>
+		 <ion-delete-button class="ion-minus-circled" ng-click = "RemoveFavourite($index)"></ion-delete-button>
+	
+	
+
+		</ion-item>	  
+	  </ion-list>
+	
+  </ion-content>
+</ion-view>
